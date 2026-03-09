@@ -11,5 +11,7 @@
     <string>run_island.sh</string>
     <key>LSUIElement</key>
     <true/> <!-- 隐藏 Dock 图标 -->
+<key>CFBundleIconFile</key>
+<string>icon</string>
 </dict>
 </plist>
