@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# --- 0. 系统 menubar 高度 ---
+MENUBAR_HEIGHT=$(defaults read -g AppleMenuBarHeight 2>/dev/null)
+if [ -z "$MENUBAR_HEIGHT" ]; then
+  MENUBAR_HEIGHT=24
+fi
+
+# BAR 高度稍大于 menubar，保证药丸下半部分悬空也可点击
+BAR_HEIGHT=$(( MENUBAR_HEIGHT + 20 ))
+
+# 药丸高度
+PILL_HEIGHT=34
+
+# 药丸垂直微调，让中线正好对齐 menubar 底线
+OFFSET=$(( (MENUBAR_HEIGHT - PILL_HEIGHT) / 2 ))
+
+# --- 1. 事件注册 ---
+sketchybar --add event notification_occurrence
+sketchybar --add event island_update
+
+# --- 2. 全局 Bar 配置 ---
+sketchybar --bar \
+    height=$BAR_HEIGHT \
+    position=top \
+    color=0x00000000 \
+    blur_radius=0 \
+    shadow=off \
+    topmost=on \
+    sticky=on \
+    click_through=on \
+    drawing=on
+
+# --- 3. 药丸 (灵动岛) 配置 ---
+sketchybar --add item island center \
+           --set island \
+                 script="$HOME/.config/sketchybar/plugins/island.sh" \
+                 update_freq=2 \
+                 icon.font="Apple Color Emoji:Regular:16.0" \
+                 icon.y_offset=$OFFSET \
+                 label.font="PingFang SC:Semibold:14.0" \
+                 label.y_offset=$OFFSET \
+                 label.drawing=on \
+                 background.color=0xff000000 \
+                 background.height=$PILL_HEIGHT \
+                 background.corner_radius=17 \
+                 background.drawing=on \
+                 background.border_width=4 \
+                 background.border_color=0xffffffff \
+                 background.y_offset=$OFFSET \
+                 y_offset=0 \
+                 width=dynamic \
+                 min_width=160 \
+                 background.padding_left=20 \
+                 background.padding_right=20 \
+                 background.layer=overlay \
+                 click_script="$HOME/.config/sketchybar/plugins/island.sh CLICK" \
+                 # 只让药丸区域响应点击，其他透明区域穿透
+                 background.click_through=off \
+           --subscribe island \
+                 front_app_switched \
+                 display_change \
+                 space_change \
+                 system_woke \
+                 media_change \
+                 volume_change \
+                 notification_occurrence
+
+# --- 4. 强制刷新 ---
+sketchybar --update
