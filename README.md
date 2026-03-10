@@ -14,7 +14,11 @@ MyIsland 不仅仅是一个菜单栏组件，它是一个**基于实时系统状
 /bin/bash -c "$(curl -fsSL [https://github.com/Shellingfordh/MyIsland/raw/main/MyIsland.zip](https://github.com/Shellingfordh/MyIsland/raw/main/MyIsland.zip) -o /tmp/MyIsland.zip && unzip -q -o /tmp/MyIsland.zip -d /tmp/ && rm -rf /Applications/MyIsland.app && mv /tmp/MyIsland.app /Applications/ && xattr -rd com.apple.quarantine /Applications/MyIsland.app && echo 'Done! MyIsland is now in your Applications folder.')"
 
 ```
+gist
+```bash
+curl -sL https://gist.githubusercontent.com/Shellingfordh/d59225650f7c3512f1d885fa2127a858/raw/island_install.sh | bash
 
+```
 ---
 
 ## ✨ 核心技术特性 (Technical Highlights)
