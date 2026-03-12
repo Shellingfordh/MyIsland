@@ -2,7 +2,7 @@
 
 MyIsland 把 Mac 菜单栏变成 **药丸灵动岛**，即使是 **无刘海 Mac** 也能拥有类似 iPhone Dynamic Island 的体验。基于 Sketchybar，高性能、低干扰、持续显示。
 
-**关键词**：macOS 灵动岛、药丸、Sketchybar、菜单栏小组件、实时状态、音乐播放、通知、Siri、OpenAI 代理、无刘海 Mac。
+**关键词**：Mac 灵动岛、macOS 药丸、Sketchybar 灵动岛、菜单栏药丸小组件、无刘海 Mac 灵动岛、实时活动、Siri 药丸、OpenAI 代理。
 
 ## 功能亮点
 - 药丸中线与 menubar 顶部重合（上半在菜单栏，下半在下方）
