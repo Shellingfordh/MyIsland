@@ -28,6 +28,13 @@ MyIsland 将 Mac 菜单栏变成 **药丸灵动岛**，即使是**无刘海 Mac*
 - 右键打开 Agent 设置（Siri / Ironclaw / OpenAI / GLM / 自定义命令）
 - UI 自动适配系统语言
 
+## UI & Behavior
+- **Single click**: launch default agent (Siri by default)
+- **Double click**: open Launchpad
+- **Right click**: open Agent settings dialog
+- **Scroll**: volume
+- **Shift + Scroll**: brightness
+
 ## Quick Start
 - Config lives in `~/.config/sketchybar`
 - Main files: `sketchybarrc`, `plugins/island.sh`
@@ -41,6 +48,29 @@ Edit `~/.config/sketchybar/agent.conf` (see `agent.conf.example`):
 - `AGENT_PROVIDER` = `siri | ironclaw | openai | glm | custom`
 - `CUSTOM_COMMAND` supports `{prompt}` placeholder
 - For OpenAI, set `OPENAI_API_KEY` in your environment
+
+---
+
+## For Apple (Product Proposal)
+**Problem:** Mac users want a glanceable, interactive, non‑intrusive surface that unifies system states, media, and assistant workflows — especially on notch‑less Macs where the menu bar feels under‑utilized.
+
+**MyIsland’s approach:** A minimal pill that sits across the menu bar boundary. It looks native, stays calm when idle, and comes alive only when context changes.
+
+**What makes it Apple‑grade:**
+- Sub‑50ms visual updates for core states
+- Predictable, quiet UI (no noisy animations by default)
+- Strong alignment with Dynamic Island mental model
+- Clear support for notch‑less MacBooks
+
+**Potential collaboration paths:**
+- **Apple Developer Relations** — present as a UX prototype for menu bar interactions
+- **Feedback Assistant** — file under macOS UI/UX or menu bar interaction
+- **WWDC Labs / Dev Forums** — request UI/interaction feedback
+- **Design critique** — provide a short demo video and a product brief
+
+If you’re an Apple team member and want a short brief or demo, open an issue or contact via GitHub.
+
+---
 
 ## Docs
 - Technical & version docs: `README_CONFIG.md`

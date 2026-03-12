@@ -55,6 +55,9 @@ if [ "$CHECK_TOP_OCCUPIED" = "true" ]; then
 ISLAND_Y_OFFSET=-42
 fi
 
+# Prevent pill clipping (ensure bar height >= pill height + margin)
+BAR_HEIGHT=$((ISLAND_BG_HEIGHT + 10))
+
 fi
 
 
