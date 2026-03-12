@@ -118,6 +118,14 @@ HALF_HEIGHT=$((ISLAND_BG_HEIGHT / 2))
 BASE_Y_OFFSET=$((0 - HALF_HEIGHT))
 OCCUPIED_Y_OFFSET=$((BASE_Y_OFFSET - MENU_BAR_HEIGHT))
 
+# Fine-tune per model (positive = down, negative = up)
+TUNE_Y_OFFSET=0
+if [[ "$MODEL_NAME" == "MacBookAir10,1" ]]; then
+    TUNE_Y_OFFSET=-1
+fi
+BASE_Y_OFFSET=$((BASE_Y_OFFSET + TUNE_Y_OFFSET))
+OCCUPIED_Y_OFFSET=$((OCCUPIED_Y_OFFSET + TUNE_Y_OFFSET))
+
 # 当前实际偏移
 CURRENT_Y=$BASE_Y_OFFSET
 if [[ "$CHECK_TOP_OCCUPIED" == "true" ]]; then

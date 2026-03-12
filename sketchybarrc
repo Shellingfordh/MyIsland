@@ -71,10 +71,11 @@ sketchybar --add event island_update
 sketchybar --bar \
 height=$BAR_HEIGHT \
 position=top \
+display=all \
 color=0x00000000 \
 shadow=off \
 border_width=0 \
-topmost=on \
+topmost=window \
 sticky=on \
 show_in_fullscreen=on \
 drawing=on \
@@ -86,6 +87,7 @@ sketchybar --add item island center
 sketchybar --set island \
 update_freq=2 \
 drawing=on \
+display=all \
 ignore_mouse=off \
 z_index=999 \
 script="$HOME/.config/sketchybar/plugins/island.sh" \
