@@ -80,6 +80,7 @@ If you’re an Apple team member and want a short brief or demo, open an issue o
 
 ## Docs
 - Technical & version docs: `README_CONFIG.md`
+- Requirements roadmap: `REQUIREMENTS_v1.1.md` → `REQUIREMENTS_v1.6.md`
 - 中文说明：`README_CN.md`
 
 ---

@@ -62,4 +62,5 @@ MyIsland 把 Mac 菜单栏变成 **药丸灵动岛**，即使是 **无刘海 Mac
 
 ## 文档
 - 技术文档与版本说明：`README_CONFIG.md`
+- 需求路线图：`REQUIREMENTS_v1.1.md` → `REQUIREMENTS_v1.6.md`
 - English: `README.md`
