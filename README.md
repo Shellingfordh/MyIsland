@@ -57,6 +57,14 @@ Optional overrides in `~/.config/sketchybar/userconfig.sh` (see `userconfig.exam
 
 ---
 
+## Next Update Preview (Game‑style)
+- **Island Calibration**: in‑UI pixel nudges and per‑model presets
+- **Always‑On‑Top**: persistent pill above fullscreen + multi‑space
+- **Agent Hub**: Siri / OpenAI / OpenClaw / Ironclaw / Custom switch
+- **Continuity**: iPhone handoff of Focus, media, and Live Activities
+
+---
+
 ## For Apple (Product Proposal)
 **Problem:** Mac users want a glanceable, interactive, non‑intrusive surface that unifies system states, media, and assistant workflows — especially on notch‑less Macs where the menu bar feels under‑utilized.
 

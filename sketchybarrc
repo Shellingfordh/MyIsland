@@ -81,11 +81,11 @@ fi
 ICON_Y_FINAL=$ICON_Y_CALIBRATION
 LABEL_Y_FINAL=$LABEL_Y_CALIBRATION
 
-# M1 Air fine-tune: move down by +4px total
+# M1 Air fine-tune: move down by +6px total
 if [[ "$MODEL_NAME" == "MacBookAir10,1" ]]; then
-  ISLAND_Y_OFFSET=$((ISLAND_Y_OFFSET + 4))
-  ICON_Y_FINAL=$((ICON_Y_FINAL + 4))
-  LABEL_Y_FINAL=$((LABEL_Y_FINAL + 4))
+  ISLAND_Y_OFFSET=$((ISLAND_Y_OFFSET + 6))
+  ICON_Y_FINAL=$((ICON_Y_FINAL + 6))
+  LABEL_Y_FINAL=$((LABEL_Y_FINAL + 6))
 fi
 
 # Optional per-user offset tuning
@@ -141,7 +141,7 @@ background.border_color=0xcd818cf8 \
 background.drawing=on \
 background.y_offset=$ISLAND_Y_OFFSET \
 width=dynamic \
-click_script="$HOME/.config/sketchybar/plugins/island.sh CLICK"
+click_script=""
 
 
 sketchybar --subscribe island \
@@ -149,6 +149,8 @@ front_app_switched \
 display_change \
 space_change \
 system_woke \
+mouse.clicked \
+mouse.scrolled \
 notification_occurrence \
 island_update
 
