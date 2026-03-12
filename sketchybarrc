@@ -1,0 +1,128 @@
+#!/bin/bash
+
+MODEL_NAME=$(sysctl -n hw.model)
+ARCH=$(uname -m)
+
+HAS_NOTCH=$(ioreg -n AppleType6Display | grep -i "display-subsystem-id" | wc -l)
+
+CHECK_TOP_OCCUPIED=$(osascript -e 'tell application "System Events" to return exists (first process whose (name matches "(?i).*notch.*|.*island.*|.*dynamic.*|.*nook.*|.*land.*"))' 2>/dev/null)
+
+BAR_HEIGHT=40
+ISLAND_BG_HEIGHT=36
+CORNER_RADIUS=18
+ICON_SIZE=16.0
+LABEL_SIZE=15.0
+
+ISLAND_Y_OFFSET=0
+ICON_Y_CALIBRATION=0
+LABEL_Y_CALIBRATION=0
+
+
+if [[ "$ARCH" != "arm64" ]]; then
+ICON_Y_CALIBRATION=-1
+fi
+
+
+if [[ $HAS_NOTCH -gt 0 ]]; then
+
+BAR_HEIGHT=50
+ISLAND_BG_HEIGHT=40
+CORNER_RADIUS=20
+ICON_SIZE=17
+LABEL_SIZE=16
+
+if [ "$CHECK_TOP_OCCUPIED" = "true" ]; then
+ISLAND_Y_OFFSET=-52
+else
+ISLAND_Y_OFFSET=-1
+fi
+
+else
+
+if [[ "$MODEL_NAME" == *"Air"* ]]; then
+BAR_HEIGHT=38
+ISLAND_BG_HEIGHT=32
+CORNER_RADIUS=16
+ISLAND_Y_OFFSET=-1
+else
+BAR_HEIGHT=42
+ISLAND_BG_HEIGHT=35
+CORNER_RADIUS=17
+ISLAND_Y_OFFSET=-2
+fi
+
+if [ "$CHECK_TOP_OCCUPIED" = "true" ]; then
+ISLAND_Y_OFFSET=-42
+fi
+
+fi
+
+
+ICON_Y_FINAL=$ICON_Y_CALIBRATION
+LABEL_Y_FINAL=$LABEL_Y_CALIBRATION
+
+
+sketchybar --remove '/.*/'
+
+sketchybar --add event notification_occurrence
+sketchybar --add event island_update
+
+
+sketchybar --bar \
+height=$BAR_HEIGHT \
+position=top \
+color=0x00000000 \
+shadow=off \
+border_width=0 \
+topmost=on \
+sticky=on \
+show_in_fullscreen=on \
+drawing=on \
+ignore_mouse=on
+
+
+sketchybar --add item island center
+
+sketchybar --set island \
+update_freq=2 \
+drawing=on \
+ignore_mouse=off \
+z_index=999 \
+script="$HOME/.config/sketchybar/plugins/island.sh" \
+icon="💻" \
+icon.font="Apple Color Emoji:Regular:$ICON_SIZE" \
+icon.color=0xcd818cf8 \
+icon.padding_left=15 \
+icon.y_offset=$ICON_Y_FINAL \
+label="Loading..." \
+label.font="PingFang SC:Semibold:$LABEL_SIZE" \
+label.color=0xcd818cf8 \
+label.padding_right=18 \
+label.y_offset=$LABEL_Y_FINAL \
+background.color=0xff000000 \
+background.height=$ISLAND_BG_HEIGHT \
+background.corner_radius=$CORNER_RADIUS \
+background.border_width=2 \
+background.border_color=0xcd818cf8 \
+background.drawing=on \
+background.y_offset=$ISLAND_Y_OFFSET \
+width=dynamic
+
+
+sketchybar --subscribe island \
+front_app_switched \
+display_change \
+space_change \
+system_woke \
+mouse.clicked \
+mouse.scrolled \
+notification_occurrence \
+island_update
+
+
+sketchybar --update
+
+# Start notification watcher if not already running
+if ! pgrep -f "$HOME/.config/sketchybar/plugins/notifier.sh" >/dev/null 2>&1; then
+  "$HOME/.config/sketchybar/plugins/notifier.sh" >/dev/null 2>&1 &
+fi
