@@ -16,10 +16,16 @@ HAS_NOTCH=$(ioreg -n AppleType6Display | grep -i "is-built-in" | grep -i "displa
 CHECK_TOP_OCCUPIED=$(osascript -e 'tell application "System Events" to return exists (first process whose (name matches "(?i).*notch.*|.*island.*|.*dynamic.*|.*nook.*|.*land.*"))' 2>/dev/null)
 
 # --- 0.1 Locale (UI language) ---
+APPLE_LANG=$(defaults read -g AppleLanguages 2>/dev/null | awk 'NR==2{gsub(/[",]/,""); gsub(/ /,""); print $1}')
 APPLE_LOCALE=$(defaults read -g AppleLocale 2>/dev/null)
 LANG_IS_ZH=0
-case "$APPLE_LOCALE" in
+case "$APPLE_LANG" in
   zh* ) LANG_IS_ZH=1 ;;
+  * )
+    case "$APPLE_LOCALE" in
+      zh* ) LANG_IS_ZH=1 ;;
+    esac
+  ;;
 esac
 
 loc() {
