@@ -304,6 +304,12 @@ handle_double_click() {
 CLICK_FILE="/tmp/sketchybar_island_click"
 DOUBLE_CLICK_MS=350
 
+# Fallback for click_script (single click)
+if [ "$1" = "CLICK" ]; then
+    handle_single_click
+    exit 0
+fi
+
 if [ "$SENDER" = "mouse.clicked" ]; then
     # Right click opens settings UI
     if [ "$BUTTON" = "right" ] || [ "$BUTTON" = "2" ]; then

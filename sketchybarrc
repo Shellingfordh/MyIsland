@@ -7,6 +7,13 @@ HAS_NOTCH=$(ioreg -n AppleType6Display | grep -i "display-subsystem-id" | wc -l)
 
 CHECK_TOP_OCCUPIED=$(osascript -e 'tell application "System Events" to return exists (first process whose (name matches "(?i).*notch.*|.*island.*|.*dynamic.*|.*nook.*|.*land.*"))' 2>/dev/null)
 
+# User overrides
+USER_CONFIG="$HOME/.config/sketchybar/userconfig.sh"
+if [ -f "$USER_CONFIG" ]; then
+  # shellcheck disable=SC1090
+  source "$USER_CONFIG"
+fi
+
 BAR_HEIGHT=40
 ISLAND_BG_HEIGHT=36
 CORNER_RADIUS=18
@@ -57,17 +64,35 @@ fi
 
 fi
 
+# Allow per-user pill height override
+if [ -n "${USER_ISLAND_BG_HEIGHT:-}" ]; then
+  ISLAND_BG_HEIGHT=$USER_ISLAND_BG_HEIGHT
+  CORNER_RADIUS=$((ISLAND_BG_HEIGHT / 2))
+fi
+
 # Prevent pill clipping (ensure bar height >= pill height + margin)
 BAR_HEIGHT=$((ISLAND_BG_HEIGHT + 12))
+if [ -n "${USER_BAR_HEIGHT:-}" ]; then
+  BAR_HEIGHT=$USER_BAR_HEIGHT
+elif [ -n "${USER_BAR_EXTRA:-}" ]; then
+  BAR_HEIGHT=$((BAR_HEIGHT + USER_BAR_EXTRA))
+fi
 
 ICON_Y_FINAL=$ICON_Y_CALIBRATION
 LABEL_Y_FINAL=$LABEL_Y_CALIBRATION
 
-# M1 Air fine-tune: move down by +2px
+# M1 Air fine-tune: move down by +4px total
 if [[ "$MODEL_NAME" == "MacBookAir10,1" ]]; then
-  ISLAND_Y_OFFSET=$((ISLAND_Y_OFFSET + 2))
-  ICON_Y_FINAL=$((ICON_Y_FINAL + 2))
-  LABEL_Y_FINAL=$((LABEL_Y_FINAL + 2))
+  ISLAND_Y_OFFSET=$((ISLAND_Y_OFFSET + 4))
+  ICON_Y_FINAL=$((ICON_Y_FINAL + 4))
+  LABEL_Y_FINAL=$((LABEL_Y_FINAL + 4))
+fi
+
+# Optional per-user offset tuning
+if [ -n "${USER_ISLAND_Y_OFFSET_EXTRA:-}" ]; then
+  ISLAND_Y_OFFSET=$((ISLAND_Y_OFFSET + USER_ISLAND_Y_OFFSET_EXTRA))
+  ICON_Y_FINAL=$((ICON_Y_FINAL + USER_ISLAND_Y_OFFSET_EXTRA))
+  LABEL_Y_FINAL=$((LABEL_Y_FINAL + USER_ISLAND_Y_OFFSET_EXTRA))
 fi
 
 

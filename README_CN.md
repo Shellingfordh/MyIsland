@@ -33,6 +33,12 @@ MyIsland 把 Mac 菜单栏变成 **药丸灵动岛**，即使是 **无刘海 Mac
 - `CUSTOM_COMMAND` 支持 `{prompt}` 占位符
 - OpenAI 需要配置 `OPENAI_API_KEY`
 
+## 用户调节（高度 / 偏移）
+可选配置：`~/.config/sketchybar/userconfig.sh`（示例：`userconfig.example.sh`）：
+- `USER_BAR_HEIGHT` 或 `USER_BAR_EXTRA`
+- `USER_ISLAND_BG_HEIGHT`
+- `USER_ISLAND_Y_OFFSET_EXTRA`
+
 ---
 
 ## For Apple（产品提案摘要）

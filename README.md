@@ -49,6 +49,12 @@ Edit `~/.config/sketchybar/agent.conf` (see `agent.conf.example`):
 - `CUSTOM_COMMAND` supports `{prompt}` placeholder
 - For OpenAI, set `OPENAI_API_KEY` in your environment
 
+## User Tuning (Height / Offset)
+Optional overrides in `~/.config/sketchybar/userconfig.sh` (see `userconfig.example.sh`):
+- `USER_BAR_HEIGHT` or `USER_BAR_EXTRA`
+- `USER_ISLAND_BG_HEIGHT`
+- `USER_ISLAND_Y_OFFSET_EXTRA`
+
 ---
 
 ## For Apple (Product Proposal)
