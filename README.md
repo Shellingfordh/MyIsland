@@ -62,6 +62,7 @@ Optional overrides in `~/.config/sketchybar/userconfig.sh` (see `userconfig.exam
 - **Always‑On‑Top**: persistent pill above fullscreen + multi‑space
 - **Agent Hub**: Siri / OpenAI / OpenClaw / Ironclaw / Custom switch
 - **Continuity**: iPhone handoff of Focus, media, and Live Activities
+- **Hot from GitHub**: fast‑rising agent runtimes + local voice/command stacks
 
 ---
 

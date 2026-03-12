@@ -93,6 +93,8 @@ fi
 
 # --- 2.1 交互控制与缓存 ---
 CONTROL_CACHE="/tmp/sketchybar_island_ctrl"
+VOLUME_CACHE="/tmp/sketchybar_island_volume"
+BRIGHTNESS_CACHE="/tmp/sketchybar_island_brightness"
 
 set_control_cache() {
     local msg="$1"
@@ -132,6 +134,7 @@ adjust_volume() {
     new=$(clamp "$new" 0 100)
     osascript -e "set volume output volume $new" >/dev/null 2>&1
     set_control_cache "$STR_VOLUME ${new}%" "🔊"
+    echo "$new" > "$VOLUME_CACHE"
 }
 
 adjust_brightness() {
@@ -143,6 +146,7 @@ adjust_brightness() {
         new=$(perl -e '$c=shift;$d=shift;$n=$c+$d; $n=1 if $n>1; $n=0.1 if $n<0.1; printf "%.2f", $n' "$cur" "$delta")
         brightness "$new" >/dev/null 2>&1
         set_control_cache "$STR_BRIGHTNESS $(perl -e 'printf "%d", (shift*100)' "$new")%" "🔆"
+        perl -e 'printf "%d", (shift*100)' "$new" > "$BRIGHTNESS_CACHE"
     else
         if [ "$delta" = "0.05" ]; then
             osascript -e 'tell application "System Events" to key code 145' >/dev/null 2>&1
@@ -151,6 +155,28 @@ adjust_brightness() {
             osascript -e 'tell application "System Events" to key code 144' >/dev/null 2>&1
             set_control_cache "$STR_BRIGHTNESS_DOWN" "🔅"
         fi
+    fi
+}
+
+poll_system_controls() {
+    local cur_vol cur_bri last_vol last_bri
+    cur_vol=$(osascript -e 'output volume of (get volume settings)' 2>/dev/null)
+    cur_vol=${cur_vol:-0}
+    last_vol=$(cat "$VOLUME_CACHE" 2>/dev/null || echo "")
+    if [ -n "$last_vol" ] && [ "$cur_vol" != "$last_vol" ]; then
+        set_control_cache "$STR_VOLUME ${cur_vol}%" "🔊"
+    fi
+    echo "$cur_vol" > "$VOLUME_CACHE"
+
+    if command -v brightness >/dev/null 2>&1; then
+        cur_bri=$(brightness -l | awk '/brightness/ {print $4}' | head -n1)
+        cur_bri=${cur_bri:-0.7}
+        cur_bri=$(perl -e 'printf "%d", (shift*100)' "$cur_bri")
+        last_bri=$(cat "$BRIGHTNESS_CACHE" 2>/dev/null || echo "")
+        if [ -n "$last_bri" ] && [ "$cur_bri" != "$last_bri" ]; then
+            set_control_cache "$STR_BRIGHTNESS ${cur_bri}%" "🔆"
+        fi
+        echo "$cur_bri" > "$BRIGHTNESS_CACHE"
     fi
 }
 
@@ -318,8 +344,15 @@ fi
 
 if [ "$SENDER" = "mouse.clicked" ]; then
     # Right click opens settings UI
-    if [ "$BUTTON" = "right" ] || [ "$BUTTON" = "2" ]; then
+    if [ "$BUTTON" = "right" ] || [ "$BUTTON" = "2" ] || [ "$BUTTON" = "3" ] || [ "$BUTTON" = "secondary" ]; then
         open_settings
+        exit 0
+    fi
+
+    # If sketchybar provides click count, honor it
+    click_count="${CLICK_COUNT:-${CLICKED:-${COUNT:-}}}"
+    if [ -n "$click_count" ] && [ "$click_count" -ge 2 ]; then
+        handle_double_click
         exit 0
     fi
 
@@ -353,6 +386,8 @@ if [ "$SENDER" = "mouse.scrolled" ]; then
         fi
     fi
 fi
+
+poll_system_controls
 
 # --- 1. 基础计算：流光引擎核心 ---
 TIME=$(date +%s)

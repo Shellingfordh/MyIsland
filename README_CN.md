@@ -46,6 +46,7 @@ MyIsland 把 Mac 菜单栏变成 **药丸灵动岛**，即使是 **无刘海 Mac
 - **始终置顶**：全屏与多空间持续显示
 - **Agent Hub**：Siri / OpenAI / OpenClaw / Ironclaw / Custom 切换
 - **连续互通**：与 iPhone 的专注、媒体、实时活动联动
+- **GitHub 热点**：高增长代理框架 + 本地语音/指令栈
 
 ---
 
