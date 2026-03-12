@@ -55,14 +55,20 @@ if [ "$CHECK_TOP_OCCUPIED" = "true" ]; then
 ISLAND_Y_OFFSET=-42
 fi
 
-# Prevent pill clipping (ensure bar height >= pill height + margin)
-BAR_HEIGHT=$((ISLAND_BG_HEIGHT + 10))
-
 fi
 
+# Prevent pill clipping (ensure bar height >= pill height + margin)
+BAR_HEIGHT=$((ISLAND_BG_HEIGHT + 12))
 
 ICON_Y_FINAL=$ICON_Y_CALIBRATION
 LABEL_Y_FINAL=$LABEL_Y_CALIBRATION
+
+# M1 Air fine-tune: move down by +2px
+if [[ "$MODEL_NAME" == "MacBookAir10,1" ]]; then
+  ISLAND_Y_OFFSET=$((ISLAND_Y_OFFSET + 2))
+  ICON_Y_FINAL=$((ICON_Y_FINAL + 2))
+  LABEL_Y_FINAL=$((LABEL_Y_FINAL + 2))
+fi
 
 
 sketchybar --remove '/.*/'
@@ -74,7 +80,6 @@ sketchybar --add event island_update
 sketchybar --bar \
 height=$BAR_HEIGHT \
 position=top \
-display=all \
 color=0x00000000 \
 shadow=off \
 border_width=0 \
@@ -90,7 +95,6 @@ sketchybar --add item island center
 sketchybar --set island \
 update_freq=2 \
 drawing=on \
-display=all \
 ignore_mouse=off \
 z_index=999 \
 script="$HOME/.config/sketchybar/plugins/island.sh" \
@@ -111,7 +115,8 @@ background.border_width=2 \
 background.border_color=0xcd818cf8 \
 background.drawing=on \
 background.y_offset=$ISLAND_Y_OFFSET \
-width=dynamic
+width=dynamic \
+click_script="$HOME/.config/sketchybar/plugins/island.sh CLICK"
 
 
 sketchybar --subscribe island \
@@ -119,15 +124,8 @@ front_app_switched \
 display_change \
 space_change \
 system_woke \
-mouse.clicked \
-mouse.scrolled \
 notification_occurrence \
 island_update
 
 
 sketchybar --update
-
-# Start notification watcher if not already running
-if ! pgrep -f "$HOME/.config/sketchybar/plugins/notifier.sh" >/dev/null 2>&1; then
-  "$HOME/.config/sketchybar/plugins/notifier.sh" >/dev/null 2>&1 &
-fi

@@ -69,68 +69,12 @@ if [ -f "$AGENT_CONF" ]; then
     source "$AGENT_CONF"
 fi
 
-# --- 1. 2x2x2 矩阵逻辑校准 ---
-IS_AIR=0
-[[ "$MODEL_NAME" == *"Air"* ]] && IS_AIR=1
-
-BAR_HEIGHT=40
-ISLAND_BG_HEIGHT=36
-CORNER_RADIUS=18
-ICON_SIZE=16
-LABEL_SIZE=15
-
-ICON_Y_FIX=0
-LABEL_Y_FIX=0
-
-# 8 种情况 (arch x air/pro x notch)
-if [[ $HAS_NOTCH -gt 0 ]]; then
-    BAR_HEIGHT=50
-    ISLAND_BG_HEIGHT=40
-    CORNER_RADIUS=20
-    ICON_SIZE=17
-    LABEL_SIZE=16
-else
-    if [[ $IS_AIR -eq 1 ]]; then
-        BAR_HEIGHT=38
-        ISLAND_BG_HEIGHT=32
-        CORNER_RADIUS=16
-    else
-        BAR_HEIGHT=42
-        ISLAND_BG_HEIGHT=35
-        CORNER_RADIUS=17
-    fi
-fi
-
-# 架构微调
-if [[ "$ARCH" != "arm64" ]]; then
-    ICON_Y_FIX=-1
-fi
-if [[ $HAS_NOTCH -eq 0 && $IS_AIR -eq 1 && "$ARCH" == "arm64" ]]; then
-    ICON_Y_FIX=1
-fi
-
-# 菜单栏高度（用于占用时下移）
-MENU_BAR_HEIGHT=$(osascript -e 'tell application "System Events" to get size of menu bar 1 of application process "SystemUIServer"' 2>/dev/null | awk -F', ' '{print $2}')
-MENU_BAR_HEIGHT=${MENU_BAR_HEIGHT:-24}
-
-# 目标：药丸中线与 menubar 顶部重合
-HALF_HEIGHT=$((ISLAND_BG_HEIGHT / 2))
-BASE_Y_OFFSET=$((0 - HALF_HEIGHT))
-OCCUPIED_Y_OFFSET=$((BASE_Y_OFFSET - MENU_BAR_HEIGHT))
-
-# Fine-tune per model (positive = down, negative = up)
-TUNE_Y_OFFSET=0
-if [[ "$MODEL_NAME" == "MacBookAir10,1" ]]; then
-    TUNE_Y_OFFSET=-4
-fi
-BASE_Y_OFFSET=$((BASE_Y_OFFSET + TUNE_Y_OFFSET))
-OCCUPIED_Y_OFFSET=$((OCCUPIED_Y_OFFSET + TUNE_Y_OFFSET))
-
-# 当前实际偏移
-CURRENT_Y=$BASE_Y_OFFSET
-if [[ "$CHECK_TOP_OCCUPIED" == "true" ]]; then
-    CURRENT_Y=$OCCUPIED_Y_OFFSET
-fi
+# --- 1. Positioning (driven by sketchybarrc) ---
+ISLAND_BG_HEIGHT=${ISLAND_BG_HEIGHT:-38}
+CORNER_RADIUS=${CORNER_RADIUS:-18}
+ISLAND_Y_OFFSET=${ISLAND_Y_OFFSET:-0}
+ICON_Y_FINAL=${ICON_Y_FINAL:-0}
+LABEL_Y_FINAL=${LABEL_Y_FINAL:-0}
 
 # --- 2. 权限诱导与初始化通知 ---
 # 只在第一次运行或重启时执行，确保 System Events 权限就绪
@@ -771,9 +715,9 @@ COMMON_ARGS=(
     background.corner_radius=$CORNER_RADIUS
     background.color=0xff000000
     background.border_color="$COLOR" 
-    background.y_offset=$CURRENT_Y
-    icon.y_offset=$((CURRENT_Y + ICON_Y_FIX))
-    label.y_offset=$((CURRENT_Y + LABEL_Y_FIX))
+    background.y_offset=$ISLAND_Y_OFFSET
+    icon.y_offset=$((ISLAND_Y_OFFSET + ICON_Y_FINAL))
+    label.y_offset=$((ISLAND_Y_OFFSET + LABEL_Y_FINAL))
     icon.drawing=on
     icon.color="$MAIN_COLOR"
     icon.padding_left=15
