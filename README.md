@@ -8,7 +8,7 @@ A polished **Dynamic Island**-style pill for **macOS menu bar** using **SketchyB
 
 ## Highlights
 - **System-language aware UI** (auto‑localized).
-- **Pill takeover for Volume/Brightness OSD** (shows system changes in the Island).
+- **Pill takeover for Volume/Brightness OSD** (native event‑driven display).
 - **Manual user behavior only**: no auto-login, no captcha automation, no cookie injection.
 - **Smooth animations** and adaptive notch alignment.
 - **Multi-profile ready**: works well with separate Chrome profiles.
@@ -30,20 +30,20 @@ A polished **Dynamic Island**-style pill for **macOS menu bar** using **SketchyB
    ```
 
 ## Controls
-- **Single click**: open agent (Siri/Custom).
+- **Single click**: open Siri/agent.
 - **Double click**: Launchpad.
 - **Scroll**: Volume (normal scroll), Brightness (Shift + scroll).
 - **Keyboard volume/brightness**: the pill shows the change automatically.
 
 ## Docs
 - `README_CONFIG.md`
-- `REQUIREMENTS_v1.8.md`
+- `REQUIREMENTS_v1.9.md`
 
 ## Notes
-- For brightness polling, `brightness` CLI is optional (if installed, higher accuracy).
+- Siri greeting language is controlled by macOS Siri settings.
 
 ## Next Preview (from the community trendline)
-We’re aligning with the macOS community’s most-loved patterns: **menu bar Now Playing**, **notch productivity trays**, and **system quick toggles**. Inspiration comes from tools like **SpotMenu** (music in the menu bar), **Itchy** (notch modules), and **OnlySwitch** (system toggles), but the goal is a tighter Apple‑HIG look inside one unified Dynamic‑Island pill.
+We’re aligning with the macOS community’s most‑loved patterns: **menu bar Now Playing**, **notch productivity trays**, and **system quick toggles**. Inspiration comes from tools like **SpotMenu** (music in the menu bar), **Itchy** (notch modules), and **OnlySwitch** (system toggles), but the goal is a tighter Apple‑HIG look inside one unified Dynamic‑Island pill.
 
 ## License
 GPL-3.0 (see `LICENSE`).

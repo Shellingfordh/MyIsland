@@ -116,7 +116,6 @@ ignore_mouse=on
 
 
 sketchybar --add item island center
-sketchybar --add item island_control_watch right
 
 sketchybar --set island \
 update_freq=2 \
@@ -144,12 +143,6 @@ background.y_offset=$ISLAND_Y_OFFSET \
 width=dynamic \
 click_script=""
 
-sketchybar --set island_control_watch \
-update_freq=1 \
-drawing=off \
-script="$HOME/.config/sketchybar/plugins/control_watch.sh"
-
-
 sketchybar --subscribe island \
 front_app_switched \
 display_change \
@@ -157,6 +150,8 @@ space_change \
 system_woke \
 mouse.clicked \
 mouse.scrolled \
+volume_change \
+brightness_change \
 notification_occurrence \
 island_update
 

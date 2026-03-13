@@ -125,6 +125,12 @@ get_control_cache() {
     echo ""
 }
 
+set_control_cache_now() {
+    local msg="$1"
+    local icon="$2"
+    echo "$(date +%s)|$msg|$icon" > "$CONTROL_CACHE"
+}
+
 clamp() {
     local v=$1 min=$2 max=$3
     [ "$v" -lt "$min" ] && v=$min
@@ -392,6 +398,36 @@ if [ "$SENDER" = "mouse.scrolled" ]; then
             adjust_volume -6
         fi
     fi
+fi
+
+# SketchyBar native events (volume/brightness)
+if [ "$SENDER" = "volume_change" ]; then
+    vol="${INFO:-}"
+    if [ -z "$vol" ]; then
+        vol=$(osascript -e 'output volume of (get volume settings)' 2>/dev/null)
+    fi
+    vol=${vol:-0}
+    set_control_cache_now "$STR_VOLUME ${vol}%" "🔊"
+    echo "$vol" > "$VOLUME_CACHE"
+    sketchybar --trigger island_update
+    exit 0
+fi
+
+if [ "$SENDER" = "brightness_change" ]; then
+    bri="${INFO:-}"
+    if [ -z "$bri" ]; then
+        if command -v brightness >/dev/null 2>&1; then
+            bri=$(brightness -l | awk '/brightness/ {print $4}' | head -n1)
+            bri=${bri:-0.7}
+            bri=$(perl -e 'printf "%d", (shift*100)' "$bri")
+        else
+            bri=50
+        fi
+    fi
+    set_control_cache_now "$STR_BRIGHTNESS ${bri}%" "🔆"
+    echo "$bri" > "$BRIGHTNESS_CACHE"
+    sketchybar --trigger island_update
+    exit 0
 fi
 
 poll_system_controls
