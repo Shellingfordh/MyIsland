@@ -46,6 +46,7 @@ loc() {
 STR_INIT_TITLE=$(loc "Island" "药丸")
 STR_INIT_SUB=$(loc "Permissions & Matrix Checked" "权限与矩阵检查完成")
 STR_SIRI=$(loc "Siri" "Siri")
+STR_NOW_PLAYING=$(loc "Now Playing" "正在播放")
 STR_LAUNCHPAD=$(loc "All Apps" "全部应用")
 STR_NOTIFICATION_CENTER=$(loc "Notification Center" "通知中心")
 STR_VOLUME=$(loc "Volume" "音量")
@@ -340,11 +341,10 @@ handle_double_click() {
 }
 
 CLICK_FILE="/tmp/sketchybar_island_click"
-DOUBLE_CLICK_MS=350
+DOUBLE_CLICK_MS=500
 
-# Fallback for click_script (single click)
+# Fallback for click_script: do nothing to avoid accidental single-click triggers
 if [ "$1" = "CLICK" ]; then
-    handle_single_click
     exit 0
 fi
 
@@ -358,6 +358,7 @@ if [ "$SENDER" = "mouse.clicked" ]; then
     # If sketchybar provides click count, honor it
     click_count="${CLICK_COUNT:-${CLICKED:-${COUNT:-}}}"
     if [ -n "$click_count" ] && [ "$click_count" -ge 2 ]; then
+        rm -f "$CLICK_FILE"
         handle_double_click
         exit 0
     fi
@@ -373,7 +374,7 @@ if [ "$SENDER" = "mouse.clicked" ]; then
     fi
 
     echo "$now" > "$CLICK_FILE"
-    ( sleep 0.35; if [ -f "$CLICK_FILE" ] && [ "$(cat "$CLICK_FILE")" = "$now" ]; then rm -f "$CLICK_FILE"; handle_single_click; fi ) &
+    ( sleep 0.5; if [ -f "$CLICK_FILE" ] && [ "$(cat "$CLICK_FILE")" = "$now" ]; then rm -f "$CLICK_FILE"; handle_single_click; fi ) &
     exit 0
 fi
 if [ "$SENDER" = "mouse.scrolled" ]; then
@@ -585,7 +586,7 @@ get_info() {
         STATE=$(osascript -e "tell application \"$FRONT\" to player state as string" 2>/dev/null)
         if [ "$STATE" = "playing" ]; then
             TITLE=$(osascript -e "tell application \"$FRONT\" to name of current track" 2>/dev/null)
-            echo "PLAY|$(get_app_color "$FRONT" "$BUNDLE")|$TITLE|🎵"; return
+            echo "PLAY|$(get_app_color "$FRONT" "$BUNDLE")|$STR_NOW_PLAYING · $TITLE|🎵"; return
         fi
     fi
 

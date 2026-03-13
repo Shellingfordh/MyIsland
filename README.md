@@ -2,7 +2,7 @@
 
 A polished **Dynamic Island**-style pill for **macOS menu bar** using **SketchyBar**. Native-like visuals, Apple-style interactions, and **manual user control** (no auto-login, no cookie injection). Designed for **Notch MacBook** and non‑notch devices with adaptive positioning.
 
-**Keywords:** macOS Dynamic Island, SketchyBar, menu bar widget, Apple HIG, native UI, notch bar, productivity, OSD replacement, Siri pill, minimal UI, glassmorphism, macOS customization, menu bar utility, macOS workflow.
+**Keywords (natural):** macOS Dynamic Island, SketchyBar, menu bar widget, Apple HIG, native UI, notch bar, productivity, OSD replacement, Siri pill, minimal UI, glassmorphism, macOS customization, menu bar utility, Apple Silicon workflow.
 
 ---
 
@@ -37,15 +37,13 @@ A polished **Dynamic Island**-style pill for **macOS menu bar** using **SketchyB
 
 ## Docs
 - `README_CONFIG.md`
-- `REQUIREMENTS_v1.7.md`
+- `REQUIREMENTS_v1.8.md`
 
 ## Notes
 - For brightness polling, `brightness` CLI is optional (if installed, higher accuracy).
 
-## Next Preview (GitHub Trending inspirations)
-- **Now Playing pill** (album art + controls), inspired by menu‑bar music apps.
-- **Notch productivity tray** (file drop, clipboard, quick actions), inspired by notch utility apps.
-- **Native SwiftUI‑like motion** and glass layers for a more Apple‑consistent look.
+## Next Preview (from the community trendline)
+We’re aligning with the macOS community’s most-loved patterns: **menu bar Now Playing**, **notch productivity trays**, and **system quick toggles**. Inspiration comes from tools like **SpotMenu** (music in the menu bar), **Itchy** (notch modules), and **OnlySwitch** (system toggles), but the goal is a tighter Apple‑HIG look inside one unified Dynamic‑Island pill.
 
 ## License
 GPL-3.0 (see `LICENSE`).
