@@ -13,7 +13,8 @@ A polished **Dynamic Island**-style pill for the **macOS menu bar** using **Sket
 ## Highlights
 - **System-language aware UI** (auto‑localized, optional override).
 - **Pill takeover for Volume/Brightness OSD** (native event‑driven display).
-- **Audio micro‑panel** (quick volume/mute readout).
+- **Flux‑style controls** (toggle, schedule, temperature, movie mode via Night Shift).
+- **Notch Productivity Tray** (clipboard, downloads, desktop, AirDrop).
 - **Glass layer** toggle for Apple‑style depth.
 - **Quick Switch** (fast app launch from the pill menu).
 - **Manual user behavior only**: no auto-login, no captcha automation, no cookie injection.
@@ -39,13 +40,14 @@ A polished **Dynamic Island**-style pill for the **macOS menu bar** using **Sket
 - **Double click**: Launchpad.
 - **Scroll**: Volume (normal scroll), Brightness (Shift + scroll).
 - **Keyboard volume/brightness**: the pill shows the change automatically.
-- **Right click**: Settings, Quick Switch, Glass toggle, Audio panel.
+- **Right click**: Settings, Flux, Tray, Quick Switch, Glass.
 
 ## Docs
 - `README_CONFIG.md`
-- `REQUIREMENTS_v2.1.md`
+- `REQUIREMENTS_v2.2.md`
 
 ## Notes
+- Flux controls use the `nightlight` CLI (opens install page if missing).
 - Siri greeting language is controlled by macOS Siri settings.
 
 ## Agent Next Evolution (big update idea)
@@ -55,8 +57,8 @@ A polished **Dynamic Island**-style pill for the **macOS menu bar** using **Sket
 - **Action‑guarded**: explicit confirmations, no silent automation.  
 - **Privacy‑first**: local by default, minimal data exposure.
 
-## v2.1 Preview (star‑driven)
-We’re aligning with what the macOS community consistently gravitates toward: **menu‑bar Now Playing**, **notch productivity trays**, **glass UI layers**, and **quick toggles**. Inspiration comes from real‑world menu bar apps (music players, notification hubs, UI polish tools), but the goal is to merge those ideas into one Apple‑HIG‑friendly Dynamic‑Island surface — clean, subtle, and fast.
+## v2.2 Preview (trend‑aligned)
+We’re aligning with what the macOS community consistently gravitates toward: **menu‑bar Now Playing**, **notch productivity trays**, **glass UI layers**, and **quick toggles**. The goal is to merge those ideas into one Apple‑HIG‑friendly Dynamic‑Island surface — clean, subtle, and fast.
 
 ## License
 GPL-3.0 (see `LICENSE`).

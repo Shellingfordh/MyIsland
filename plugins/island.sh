@@ -82,6 +82,17 @@ STR_SETTINGS_PROMPT=$(loc "Select default agent" "选择默认代理")
 STR_SETTINGS_OPENAI_MODEL=$(loc "OpenAI model" "OpenAI 模型")
 STR_SETTINGS_CUSTOM_CMD=$(loc "Custom agent command" "自定义代理命令")
 STR_CUSTOM_CMD_MISSING=$(loc "Custom command missing" "自定义命令缺失")
+STR_FLUX=$(loc "Flux" "夜间护眼")
+STR_FLUX_TOGGLE=$(loc "Toggle Flux" "切换护眼")
+STR_FLUX_SUN=$(loc "Sunset to Sunrise" "日落到日出")
+STR_FLUX_CUSTOM=$(loc "Custom Schedule" "自定义时间")
+STR_FLUX_TEMP=$(loc "Color Temperature" "色温")
+STR_FLUX_MOVIE=$(loc "Movie Mode" "电影模式")
+STR_TRAY=$(loc "Notch Tray" "刘海托盘")
+STR_CLIPBOARD=$(loc "Clipboard" "剪贴板")
+STR_DOWNLOADS=$(loc "Downloads" "下载")
+STR_DESKTOP=$(loc "Desktop" "桌面")
+STR_AIRDROP=$(loc "AirDrop" "隔空投送")
 
 # --- 0.2 Agent config ---
 AGENT_CONF="$HOME/.config/sketchybar/agent.conf"
@@ -294,6 +305,84 @@ toggle_mute() {
     fi
 }
 
+require_nightlight() {
+    if ! command -v nightlight >/dev/null 2>&1; then
+        set_control_cache "Night Shift CLI missing" "⚠️"
+        open "https://github.com/smileyborg/nightlight" >/dev/null 2>&1
+        return 1
+    fi
+    return 0
+}
+
+nightshift_toggle() {
+    require_nightlight || return
+    nightlight toggle >/dev/null 2>&1
+    set_control_cache "$STR_FLUX" "🌙"
+}
+
+nightshift_temp() {
+    require_nightlight || return
+    local value
+    value=$(prompt_user "$STR_FLUX_TEMP (0-100)")
+    [ -z "$value" ] && return
+    nightlight temperature "$value" >/dev/null 2>&1
+    set_control_cache "$STR_FLUX_TEMP $value" "🌙"
+}
+
+nightshift_schedule_sun() {
+    require_nightlight || return
+    nightlight schedule sun >/dev/null 2>&1
+    set_control_cache "$STR_FLUX_SUN" "🌙"
+}
+
+nightshift_schedule_custom() {
+    require_nightlight || return
+    local start end
+    start=$(prompt_user "$STR_FLUX_CUSTOM (start, 24h like 21:00)")
+    [ -z "$start" ] && return
+    end=$(prompt_user "$STR_FLUX_CUSTOM (end, 24h like 07:00)")
+    [ -z "$end" ] && return
+    nightlight schedule "$start" "$end" >/dev/null 2>&1
+    set_control_cache "$STR_FLUX_CUSTOM $start-$end" "🌙"
+}
+
+movie_mode_toggle() {
+    # simple toggle: disable Night Shift temporarily
+    require_nightlight || return
+    local flag="/tmp/sketchybar_flux_movie"
+    if [ -f "$flag" ]; then
+        rm -f "$flag"
+        nightlight on >/dev/null 2>&1
+        set_control_cache "$STR_FLUX_MOVIE Off" "🎬"
+    else
+        touch "$flag"
+        nightlight off >/dev/null 2>&1
+        set_control_cache "$STR_FLUX_MOVIE On" "🎬"
+    fi
+}
+
+tray_show_clipboard() {
+    local clip
+    clip=$(pbpaste | head -c 80 | tr '\n' ' ')
+    [ -z "$clip" ] && clip="(empty)"
+    set_control_cache "$STR_CLIPBOARD: $clip" "📋"
+}
+
+tray_open_downloads() {
+    open "$HOME/Downloads" >/dev/null 2>&1
+    set_control_cache "$STR_DOWNLOADS" "⬇️"
+}
+
+tray_open_desktop() {
+    open "$HOME/Desktop" >/dev/null 2>&1
+    set_control_cache "$STR_DESKTOP" "🖥️"
+}
+
+tray_open_airdrop() {
+    open "x-apple.systempreferences:com.apple.AirDrop" >/dev/null 2>&1
+    set_control_cache "$STR_AIRDROP" "📡"
+}
+
 toggle_glass() {
     if [ -f "$GLASS_FLAG" ]; then
         rm -f "$GLASS_FLAG"
@@ -306,7 +395,7 @@ toggle_glass() {
 
 open_settings() {
     local choice
-    choice=$(osascript -e "choose from list {\"Siri\",\"Ironclaw\",\"OpenAI\",\"GLM\",\"Custom\",\"Quick Switch\",\"Audio Panel\",\"Toggle Mute\",\"Toggle Glass\"} with title \"$STR_SETTINGS_TITLE\" with prompt \"$STR_SETTINGS_PROMPT\"" 2>/dev/null | tr -d '\r')
+    choice=$(osascript -e "choose from list {\"Siri\",\"Ironclaw\",\"OpenAI\",\"GLM\",\"Custom\",\"Quick Switch\",\"Audio Panel\",\"Toggle Mute\",\"Toggle Glass\",\"Flux Toggle\",\"Flux Sunset\",\"Flux Schedule\",\"Flux Temp\",\"Flux Movie\",\"Tray Clipboard\",\"Tray Downloads\",\"Tray Desktop\",\"Tray AirDrop\"} with title \"$STR_SETTINGS_TITLE\" with prompt \"$STR_SETTINGS_PROMPT\"" 2>/dev/null | tr -d '\r')
     [ -z "$choice" ] && return
     [ "$choice" = "false" ] && return
 
@@ -339,6 +428,51 @@ open_settings() {
 
     if [ "$choice" = "Toggle Glass" ]; then
         toggle_glass
+        return
+    fi
+
+    if [ "$choice" = "Flux Toggle" ]; then
+        nightshift_toggle
+        return
+    fi
+
+    if [ "$choice" = "Flux Sunset" ]; then
+        nightshift_schedule_sun
+        return
+    fi
+
+    if [ "$choice" = "Flux Schedule" ]; then
+        nightshift_schedule_custom
+        return
+    fi
+
+    if [ "$choice" = "Flux Temp" ]; then
+        nightshift_temp
+        return
+    fi
+
+    if [ "$choice" = "Flux Movie" ]; then
+        movie_mode_toggle
+        return
+    fi
+
+    if [ "$choice" = "Tray Clipboard" ]; then
+        tray_show_clipboard
+        return
+    fi
+
+    if [ "$choice" = "Tray Downloads" ]; then
+        tray_open_downloads
+        return
+    fi
+
+    if [ "$choice" = "Tray Desktop" ]; then
+        tray_open_desktop
+        return
+    fi
+
+    if [ "$choice" = "Tray AirDrop" ]; then
+        tray_open_airdrop
         return
     fi
 
