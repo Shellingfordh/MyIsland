@@ -12,3 +12,6 @@
 # Force UI language for the Island (optional)
 # USER_LANG=en
 # USER_LANG=zh
+
+# Glass layer width (optional)
+# USER_GLASS_WIDTH=180

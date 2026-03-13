@@ -64,6 +64,8 @@ STR_LAUNCHPAD=$(loc "All Apps" "全部应用")
 STR_NOTIFICATION_CENTER=$(loc "Notification Center" "通知中心")
 STR_VOLUME=$(loc "Volume" "音量")
 STR_BRIGHTNESS=$(loc "Brightness" "亮度")
+STR_MUTED=$(loc "Muted" "已静音")
+STR_UNMUTED=$(loc "Unmuted" "已取消静音")
 STR_BRIGHTNESS_UP=$(loc "Brightness +" "亮度 +")
 STR_BRIGHTNESS_DOWN=$(loc "Brightness -" "亮度 -")
 STR_AGENT_SET=$(loc "Agent set to" "已设置代理")
@@ -115,6 +117,8 @@ fi
 CONTROL_CACHE="/tmp/sketchybar_island_ctrl"
 VOLUME_CACHE="/tmp/sketchybar_island_volume"
 BRIGHTNESS_CACHE="/tmp/sketchybar_island_brightness"
+STATE_CACHE="/tmp/sketchybar_island_state_v2"
+GLASS_FLAG="/tmp/sketchybar_glass_on"
 
 set_control_cache() {
     local msg="$1"
@@ -142,6 +146,49 @@ set_control_cache_now() {
     local msg="$1"
     local icon="$2"
     echo "$(date +%s)|$msg|$icon" > "$CONTROL_CACHE"
+}
+
+state_priority() {
+    case "$1" in
+        CTRL) echo 100 ;;
+        NOTIF) echo 80 ;;
+        PLAY) echo 70 ;;
+        FOCUS) echo 50 ;;
+        IDLE) echo 10 ;;
+        *) echo 0 ;;
+    esac
+}
+
+should_switch_state() {
+    local next="$1"
+    local now
+    now=$(date +%s)
+
+    if [ ! -f "$STATE_CACHE" ]; then
+        echo "$next|$now" > "$STATE_CACHE"
+        return 0
+    fi
+
+    local last ts
+    last=$(cut -d'|' -f1 "$STATE_CACHE")
+    ts=$(cut -d'|' -f2 "$STATE_CACHE")
+    ts=${ts:-0}
+
+    local p_last p_next
+    p_last=$(state_priority "$last")
+    p_next=$(state_priority "$next")
+
+    if [ "$p_next" -gt "$p_last" ]; then
+        echo "$next|$now" > "$STATE_CACHE"
+        return 0
+    fi
+
+    if [ $((now - ts)) -ge 1 ]; then
+        echo "$next|$now" > "$STATE_CACHE"
+        return 0
+    fi
+
+    return 1
 }
 
 clamp() {
@@ -215,9 +262,51 @@ prompt_user() {
     osascript -e "text returned of (display dialog "'"$prompt_title"'" default answer "")" 2>/dev/null
 }
 
+open_app_quick_switch() {
+    local app_name
+    app_name=$(prompt_user "Quick Switch App Name")
+    [ -z "$app_name" ] && return
+    open -a "$app_name" >/dev/null 2>&1
+    set_control_cache "$app_name" "🚀"
+}
+
+show_audio_panel() {
+    local vol muted
+    vol=$(osascript -e 'output volume of (get volume settings)' 2>/dev/null)
+    muted=$(osascript -e 'output muted of (get volume settings)' 2>/dev/null)
+    vol=${vol:-0}
+    if [ "$muted" = "true" ]; then
+        set_control_cache "$STR_VOLUME ${vol}% ($STR_MUTED)" "🔇"
+    else
+        set_control_cache "$STR_VOLUME ${vol}%" "🔊"
+    fi
+}
+
+toggle_mute() {
+    local muted
+    muted=$(osascript -e 'output muted of (get volume settings)' 2>/dev/null)
+    if [ "$muted" = "true" ]; then
+        osascript -e 'set volume without output muted' >/dev/null 2>&1
+        set_control_cache "$STR_VOLUME $STR_UNMUTED" "🔊"
+    else
+        osascript -e 'set volume with output muted' >/dev/null 2>&1
+        set_control_cache "$STR_VOLUME $STR_MUTED" "🔇"
+    fi
+}
+
+toggle_glass() {
+    if [ -f "$GLASS_FLAG" ]; then
+        rm -f "$GLASS_FLAG"
+        sketchybar --set glass drawing=off
+    else
+        touch "$GLASS_FLAG"
+        sketchybar --set glass drawing=on
+    fi
+}
+
 open_settings() {
     local choice
-    choice=$(osascript -e "choose from list {\"Siri\",\"Ironclaw\",\"OpenAI\",\"GLM\",\"Custom\"} with title \"$STR_SETTINGS_TITLE\" with prompt \"$STR_SETTINGS_PROMPT\"" 2>/dev/null | tr -d '\r')
+    choice=$(osascript -e "choose from list {\"Siri\",\"Ironclaw\",\"OpenAI\",\"GLM\",\"Custom\",\"Quick Switch\",\"Audio Panel\",\"Toggle Mute\",\"Toggle Glass\"} with title \"$STR_SETTINGS_TITLE\" with prompt \"$STR_SETTINGS_PROMPT\"" 2>/dev/null | tr -d '\r')
     [ -z "$choice" ] && return
     [ "$choice" = "false" ] && return
 
@@ -231,6 +320,26 @@ open_settings() {
 
     if [ "$choice" = "Custom" ]; then
         custom_cmd=$(osascript -e "text returned of (display dialog \"$STR_SETTINGS_CUSTOM_CMD\" default answer \"\")" 2>/dev/null | tr -d '\r')
+    fi
+
+    if [ "$choice" = "Quick Switch" ]; then
+        open_app_quick_switch
+        return
+    fi
+
+    if [ "$choice" = "Audio Panel" ]; then
+        show_audio_panel
+        return
+    fi
+
+    if [ "$choice" = "Toggle Mute" ]; then
+        toggle_mute
+        return
+    fi
+
+    if [ "$choice" = "Toggle Glass" ]; then
+        toggle_glass
+        return
     fi
 
     local provider
@@ -584,7 +693,9 @@ get_info() {
     local ctrl
     ctrl=$(get_control_cache)
     if [ -n "$ctrl" ]; then
-        echo "$ctrl"
+        if should_switch_state "CTRL"; then
+            echo "$ctrl"
+        fi
         return
     fi
     # 0.5 全局播放检测（不依赖前台）
@@ -593,13 +704,17 @@ get_info() {
     if [ "$play_state" = "playing" ]; then
         title=$(osascript -e 'tell application "Spotify" to name of current track' 2>/dev/null)
         artist=$(osascript -e 'tell application "Spotify" to artist of current track' 2>/dev/null)
-        echo "PLAY|$(get_app_color "Spotify" "com.spotify.client")|$STR_NOW_PLAYING · ${title} — ${artist}|🎵"; return
+        if should_switch_state "PLAY"; then
+            echo "PLAY|$(get_app_color "Spotify" "com.spotify.client")|$STR_NOW_PLAYING · ${title} — ${artist}|🎵"; return
+        fi
     fi
     play_state=$(osascript -e 'tell application "Music" to if it is running then player state as string else "stopped"' 2>/dev/null)
     if [ "$play_state" = "playing" ]; then
         title=$(osascript -e 'tell application "Music" to name of current track' 2>/dev/null)
         artist=$(osascript -e 'tell application "Music" to artist of current track' 2>/dev/null)
-        echo "PLAY|$(get_app_color "Music" "com.apple.Music")|$STR_NOW_PLAYING · ${title} — ${artist}|🎵"; return
+        if should_switch_state "PLAY"; then
+            echo "PLAY|$(get_app_color "Music" "com.apple.Music")|$STR_NOW_PLAYING · ${title} — ${artist}|🎵"; return
+        fi
     fi
     # 强力初始化：如果是初次运行或 update 触发，确保不卡 Loading
     if [[ "$SENDER" == "island_update" || "$SENDER" == "forced" ]]; then
@@ -617,7 +732,9 @@ get_info() {
         NOTIF_TIME=$(echo "$NOTIF_DATA" | cut -d'|' -f1)
         NOTIF_MSG=$(echo "$NOTIF_DATA" | cut -d'|' -f2)
         if [ $(( $(date +%s) - NOTIF_TIME )) -lt 5 ]; then
-            echo "NOTIF|0xffffffff:0xff888888|$NOTIF_MSG|🔔"; return
+            if should_switch_state "NOTIF"; then
+                echo "NOTIF|0xffffffff:0xff888888|$NOTIF_MSG|🔔"; return
+            fi
         fi
         rm "$NOTIF_CACHE"
     fi
@@ -649,7 +766,9 @@ get_info() {
         STATE=$(osascript -e "tell application \"$FRONT\" to player state as string" 2>/dev/null)
         if [ "$STATE" = "playing" ]; then
             TITLE=$(osascript -e "tell application \"$FRONT\" to name of current track" 2>/dev/null)
-            echo "PLAY|$(get_app_color "$FRONT" "$BUNDLE")|$STR_NOW_PLAYING · $TITLE|🎵"; return
+            if should_switch_state "PLAY"; then
+                echo "PLAY|$(get_app_color "$FRONT" "$BUNDLE")|$STR_NOW_PLAYING · $TITLE|🎵"; return
+            fi
         fi
     fi
 
@@ -725,7 +844,9 @@ get_info() {
             fi
             
             # 4. 浏览器聚焦状态
-            echo "FOCUS|$(get_app_color "$FRONT" "$BUNDLE")|$TITLE|🌐"; return
+            if should_switch_state "FOCUS"; then
+                echo "FOCUS|$(get_app_color "$FRONT" "$BUNDLE")|$TITLE|🌐"; return
+            fi
         fi # 这一行是闭合上面的 if [[ "$FRONT" =~ ...
 
     # 3d. 系统/普通 App 智能 Emoji 映射 (超全增强版)
@@ -794,11 +915,15 @@ get_info() {
             "com.docker.docker")          app_emoji="🐳" ;;
         esac
 
-        echo "FOCUS|$(get_app_color "$FRONT" "$BUNDLE")|$FRONT|$app_emoji"; return
+        if should_switch_state "FOCUS"; then
+            echo "FOCUS|$(get_app_color "$FRONT" "$BUNDLE")|$FRONT|$app_emoji"; return
+        fi
     fi
 
     # 3e. IDLE 状态
-    echo "IDLE|$RAINBOW_BREATH_COLOR|"
+    if should_switch_state "IDLE"; then
+        echo "IDLE|$RAINBOW_BREATH_COLOR|"
+    fi
 }
 
 

@@ -115,6 +115,24 @@ drawing=on \
 ignore_mouse=on
 
 
+GLASS_ON=off
+[ -f /tmp/sketchybar_glass_on ] && GLASS_ON=on
+GLASS_WIDTH=${USER_GLASS_WIDTH:-180}
+
+sketchybar --add item glass center
+
+sketchybar --set glass \
+drawing=$GLASS_ON \
+z_index=998 \
+ignore_mouse=on \
+width=$GLASS_WIDTH \
+background.color=0x40ffffff \
+background.corner_radius=$CORNER_RADIUS \
+background.height=$ISLAND_BG_HEIGHT \
+background.border_width=0 \
+background.shadow=on \
+background.y_offset=$ISLAND_Y_OFFSET
+
 sketchybar --add item island center
 
 sketchybar --set island \
