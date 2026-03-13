@@ -1,70 +1,139 @@
-# MyIsland — macOS Dynamic Island for SketchyBar
+# MyIsland — macOS 菜单栏灵动岛 / Dynamic Island for SketchyBar
 
-**EN | 中文**  
-- English: `README.md`  
-- 中文版: `README_CN.md`
+<p align="center">
+  <img src="assets/myisland-icon.svg" width="96" alt="MyIsland icon" />
+</p>
 
-A polished **Dynamic Island**-style pill for the **macOS menu bar** using **SketchyBar**. Native‑like visuals, Apple‑style interactions, and **manual user control** (no auto-login, no cookie injection). Designed for **Notch MacBook** and non‑notch devices with adaptive positioning.
+**中文 | English**
+- 本 README 已中英文合并，方便搜索与分享。
 
-**Keywords (natural):** macOS Dynamic Island, SketchyBar, menu bar widget, Apple HIG, native UI, notch bar, productivity, OSD replacement, Siri pill, minimal UI, glassmorphism, macOS customization, menu bar utility, Apple Silicon workflow.
+一句话：这是一个 **macOS 菜单栏灵动岛（Dynamic Island）** 风格的 **SketchyBar 插件**，让你的菜单栏像原生 **Siri 药丸**一样优雅，并提供 **OSD 替代**、**刘海适配**、**效率托盘**等能力。适合喜欢 **苹果 HIG**、极简 UI、玻璃拟态、菜单栏美化与 Apple Silicon 工作流的用户。
+
+A single‑file **bilingual README** for better SEO and sharing. MyIsland is a **Dynamic Island‑style menu bar widget** for macOS, built on **SketchyBar**. It feels like a native **Siri pill** with **OSD replacement**, notch‑aware layout, and a lightweight **productivity tray**.
+
+<p align="center">
+  <img src="assets/hero.svg" alt="MyIsland hero" />
+</p>
 
 ---
 
-## Highlights
-- **System-language aware UI** (auto‑localized, optional override).
-- **Pill takeover for Volume/Brightness OSD** (native event‑driven display).
-- **Flux‑style controls** (toggle, schedule, temperature, movie mode via Night Shift).
-- **Notch Productivity Tray** with **Drop Box** (drag files into a folder, auto‑action).
-- **Glass layer** toggle for Apple‑style depth.
-- **Quick Switch** (fast app launch from the pill menu).
-- **Manual user behavior only**: no auto-login, no captcha automation, no cookie injection.
+## 关键词 / Keywords（自然融入）
+macOS 灵动岛、Dynamic Island for macOS、SketchyBar 菜单栏插件、菜单栏美化、原生 UI、Apple HIG、OSD 替代、Siri 药丸、刘海 MacBook、生产力工具、玻璃拟态、菜单栏小组件、Apple Silicon workflow、menu bar widget.
 
-## How it works
-- Uses SketchyBar to render a floating pill.
-- Reads system state (front app, notifications, volume, brightness) and displays it in the Island.
-- All actions are user‑driven and local.
+---
 
-## Install
-1. Copy the repo contents to `~/.config/sketchybar/`.
-2. Ensure scripts are executable:
+## 亮点 / Highlights
+- **刘海自适配**：notch / 非 notch 自动居中对齐。
+- **OSD 替代**：音量/亮度变化由药丸原生展示。
+- **右键控制中心**：Flux、托盘、快速切换、玻璃层、Agent。
+- **Drop Box 投递箱**：拖拽文件 → Downloads / Desktop / Clipboard / AirDrop。
+- **系统语言适配**：自动本地化，可手动覆盖。
+- **安全与可控**：不自动登录、不自动验证码、不注入 cookies。
+
+---
+
+## 截图 / Screenshots
+> 当前为占位图，保证 README 即开即看。你可以用真实截图替换 `assets/` 中同名文件即可。
+
+**1）菜单栏灵动岛效果** / Pill in the menu bar
+
+![MyIsland Screenshot 1](assets/screenshot-1.svg)
+
+**2）右键菜单** / Right‑click menu (Agent / Flux / Tray / Quick Switch)
+
+![MyIsland Screenshot 2](assets/screenshot-2.svg)
+
+**3）Drop Box 投递箱** / Drag‑and‑drop workflow
+
+![MyIsland Screenshot 3](assets/screenshot-3.svg)
+
+---
+
+## 快速开始 / Quick Start
+1. 复制仓库到 `~/.config/sketchybar/`。
+2. 赋予脚本执行权限：
    ```bash
    chmod +x ~/.config/sketchybar/sketchybarrc ~/.config/sketchybar/plugins/*.sh
    ```
-3. Restart SketchyBar:
+3. 重启 SketchyBar：
    ```bash
    brew services restart sketchybar
    ```
 
-## Controls
-- **Single click**: open Siri/agent.
-- **Double click**: Launchpad.
-- **Scroll**: Volume (normal scroll), Brightness (Shift + scroll).
-- **Keyboard volume/brightness**: the pill shows the change automatically.
-- **Right click**: Settings, Flux, Tray, Quick Switch, Glass.
+可选：打开 `MyIsland.dmg`，图形化浏览与复制配置。
 
-## Notch Productivity Tray — Drop Box
-This adds a **drag‑and‑drop workflow** without unsafe automation.
+---
 
-1. **Open Drop Box**: right click → `Drop Box` (opens a folder).
-2. **Choose target**: right click → `Drop → Downloads/Desktop/Clipboard/AirDrop`.
-3. **Drag files into the folder**; the pill confirms the action within ~1s.
+## 操作与交互 / Controls
+- **单击**：唤起 Siri / Agent。
+- **双击**：Launchpad。
+- **滚轮**：音量（普通滚动），亮度（Shift + 滚动）。
+- **键盘音量/亮度**：药丸自动显示变化。
+- **右键菜单**：设置、Flux、托盘、快速切换、玻璃层、Drop Box。
 
-Default folder: `~/Downloads/MyIslandDrop` (configurable via `USER_DROP_DIR`).
+---
 
-## Docs
+## Drop Box（刘海效率托盘）
+一个**安全的拖拽投递工作流**，不涉及危险自动化。
+
+1. 右键菜单 → `Drop Box` 打开投递目录。
+2. 右键菜单 → `Drop → Downloads/Desktop/Clipboard/AirDrop` 选择目标。
+3. 拖拽文件到投递目录，药丸会在 ~1 秒内确认动作。
+
+默认投递目录：`~/Downloads/MyIslandDrop`（可用 `USER_DROP_DIR` 自定义）。
+
+---
+
+## Agent & AI
+药丸可作为轻量菜单栏助手（可选）：
+- **Siri**（默认）
+- **OpenAI**（使用 `OPENAI_API_KEY` 和 `OPENAI_MODEL`）
+- **Ironclaw / GLM**（安装后可用）
+- **Custom**（自定义命令）
+
+编辑 `~/.config/sketchybar/agent.conf`（参考 `agent.conf.example`）切换 Provider 与模型。
+
+---
+
+## 配置 / Configuration
+- `userconfig.example.sh` → 复制为 `userconfig.sh`，用于位置偏移、玻璃层宽度等微调。
+- `agent.conf.example` → 复制为 `agent.conf`，配置 Agent Provider。
+- `README_CONFIG.md` → 深入文档（结构与实现细节）。
+
+---
+
+## 依赖 / Dependencies
+必需：
+- macOS + **SketchyBar**
+- `sqlite3`, `osascript`, `curl`
+- `python3`（OpenAI 请求与解析）
+
+可选：
+- `nightlight` CLI（Flux 风格夜览控制）
+- `ironclaw`, `glm` 命令行（更多 Agent Provider）
+- Python 自动化（若接入自定义脚本）：
+  ```bash
+  python3 -m pip install opencv-python pyautogui
+  ```
+
+---
+
+## 隐私与安全 / Privacy & Safety
+MyIsland 只响应**用户主动行为**，不做隐式自动化，不会自动登录、自动验证码或注入 cookies。
+
+---
+
+## 常见问题 / Troubleshooting
+- **通知不显示**：给 SketchyBar 开启“完整磁盘访问”，允许读取通知数据库。
+- **权限弹窗**：首次运行请允许 `System Events` 权限。
+
+---
+
+## 文档 / Docs
 - `README_CONFIG.md`
 - `REQUIREMENTS_v2.3.md`
 
-## Notes
-- Flux controls use the `nightlight` CLI (opens install page if missing).
-- Siri greeting language is controlled by macOS Siri settings.
-
-## Agent Next Evolution (big update idea)
-**Agent vNext** should feel like a native macOS assistant, not a chatbot:  
-- **Context‑aware**: understands current app, media state, and system focus.  
-- **Multimodal**: text + system UI state + visual context (safe, user‑approved).  
-- **Action‑guarded**: explicit confirmations, no silent automation.  
-- **Privacy‑first**: local by default, minimal data exposure.
+---
 
 ## License
-GPL-3.0 (see `LICENSE`).
+GPL‑3.0 (see `LICENSE`).

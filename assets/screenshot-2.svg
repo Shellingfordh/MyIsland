@@ -1,0 +1,13 @@
+<svg width="1400" height="600" viewBox="0 0 1400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="600" rx="28" fill="#0C1118"/>
+  <rect x="140" y="120" width="1120" height="60" rx="30" fill="#0F1520" stroke="#3A4B66" stroke-width="3"/>
+  <rect x="520" y="132" width="360" height="36" rx="18" fill="#0B0F14" stroke="#7CE8D6" stroke-width="2"/>
+  <text x="550" y="157" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="18" fill="#CFE1FF">Right‑click menu • Flux • Tray • Quick Switch</text>
+  <rect x="560" y="200" width="280" height="320" rx="16" fill="#121A26" stroke="#2A3547"/>
+  <text x="585" y="240" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="16" fill="#D6E0F5">Siri</text>
+  <text x="585" y="270" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="16" fill="#D6E0F5">OpenAI</text>
+  <text x="585" y="300" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="16" fill="#D6E0F5">GLM</text>
+  <text x="585" y="330" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="16" fill="#D6E0F5">Flux Toggle</text>
+  <text x="585" y="360" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="16" fill="#D6E0F5">Tray Downloads</text>
+  <text x="585" y="390" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="16" fill="#D6E0F5">Drop Box</text>
+</svg>

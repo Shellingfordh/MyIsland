@@ -1,0 +1,9 @@
+<svg width="1400" height="600" viewBox="0 0 1400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="600" rx="28" fill="#0C1118"/>
+  <rect x="140" y="120" width="1120" height="60" rx="30" fill="#0F1520" stroke="#3A4B66" stroke-width="3"/>
+  <rect x="520" y="132" width="360" height="36" rx="18" fill="#0B0F14" stroke="#79E0B0" stroke-width="2"/>
+  <text x="555" y="157" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="18" fill="#CFE1FF">Drop Box • Drag files → Downloads/Desktop/Clipboard</text>
+  <rect x="360" y="240" width="680" height="240" rx="20" fill="#121A26" stroke="#2A3547"/>
+  <text x="400" y="300" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="20" fill="#D6E0F5">Drag a file into ~/Downloads/MyIslandDrop</text>
+  <text x="400" y="340" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="16" fill="#9FB2D6">The pill confirms the action within ~1s</text>
+</svg>

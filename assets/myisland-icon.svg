@@ -1,0 +1,18 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B0E12"/>
+      <stop offset="100%" stop-color="#1B2030"/>
+    </linearGradient>
+    <linearGradient id="pill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7C86FF"/>
+      <stop offset="100%" stop-color="#7CF0C5"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#g)"/>
+  <rect x="96" y="206" width="320" height="100" rx="50" fill="#0F141C" stroke="url(#pill)" stroke-width="6"/>
+  <circle cx="176" cy="256" r="16" fill="#7C86FF"/>
+  <circle cx="256" cy="256" r="16" fill="#8AE6DA"/>
+  <circle cx="336" cy="256" r="16" fill="#7CF0C5"/>
+  <text x="256" y="388" text-anchor="middle" font-family="SF Pro Rounded, -apple-system, BlinkMacSystemFont, Arial" font-size="36" fill="#E6ECFF" letter-spacing="2">MYISLAND</text>
+</svg>
