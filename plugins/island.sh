@@ -16,13 +16,19 @@ HAS_NOTCH=$(ioreg -n AppleType6Display | grep -i "is-built-in" | grep -i "displa
 CHECK_TOP_OCCUPIED=$(osascript -e 'tell application "System Events" to return exists (first process whose (name matches "(?i).*notch.*|.*island.*|.*dynamic.*|.*nook.*|.*land.*"))' 2>/dev/null)
 
 # --- 0.1 Locale (UI language) ---
-APPLE_LANG=$(defaults read -g AppleLanguages 2>/dev/null | awk 'NR==2{gsub(/[",]/,""); gsub(/ /,""); print $1}')
-APPLE_LOCALE=$(defaults read -g AppleLocale 2>/dev/null)
+APPLE_LANG=$(plutil -extract AppleLanguages.0 raw -o - "$HOME/Library/Preferences/.GlobalPreferences.plist" 2>/dev/null)
+APPLE_LOCALE=$(plutil -extract AppleLocale raw -o - "$HOME/Library/Preferences/.GlobalPreferences.plist" 2>/dev/null)
+if [ -z "$APPLE_LANG" ]; then
+    APPLE_LANG=$(defaults read -g AppleLanguages 2>/dev/null | tr -d '",()' | awk 'NF{print $1; exit}')
+fi
+if [ -z "$APPLE_LOCALE" ]; then
+    APPLE_LOCALE=$(defaults read -g AppleLocale 2>/dev/null | tr -d '",()')
+fi
 LANG_IS_ZH=0
-case "$APPLE_LANG" in
+case "${APPLE_LANG:-${LANG:-}}" in
   zh* ) LANG_IS_ZH=1 ;;
   * )
-    case "$APPLE_LOCALE" in
+    case "${APPLE_LOCALE:-}" in
       zh* ) LANG_IS_ZH=1 ;;
     esac
   ;;
