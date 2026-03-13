@@ -1,6 +1,10 @@
 # MyIsland — macOS Dynamic Island for SketchyBar
 
-A polished **Dynamic Island**-style pill for **macOS menu bar** using **SketchyBar**. Native-like visuals, Apple-style interactions, and **manual user control** (no auto-login, no cookie injection). Designed for **Notch MacBook** and non‑notch devices with adaptive positioning.
+**EN | 中文**  
+- English: `README.md`  
+- 中文版: `README_CN.md`
+
+A polished **Dynamic Island**-style pill for the **macOS menu bar** using **SketchyBar**. Native‑like visuals, Apple‑style interactions, and **manual user control** (no auto-login, no cookie injection). Designed for **Notch MacBook** and non‑notch devices with adaptive positioning.
 
 **Keywords (natural):** macOS Dynamic Island, SketchyBar, menu bar widget, Apple HIG, native UI, notch bar, productivity, OSD replacement, Siri pill, minimal UI, glassmorphism, macOS customization, menu bar utility, Apple Silicon workflow.
 
@@ -37,13 +41,13 @@ A polished **Dynamic Island**-style pill for **macOS menu bar** using **SketchyB
 
 ## Docs
 - `README_CONFIG.md`
-- `REQUIREMENTS_v1.10.md`
+- `REQUIREMENTS_v2.0.md`
 
 ## Notes
 - Siri greeting language is controlled by macOS Siri settings.
 
-## Next Preview (community trendline)
-We’re aligning with the macOS community’s most‑loved patterns: **menu bar Now Playing**, **notch productivity trays**, **file drop zones**, and **notification focus**. Inspiration includes tools like **SpotMenu** (music in the menu bar), **Itchy** (notch modules), **NotchDrop** (file drop & notch hub), and **Gitify** (menu bar notifications). The goal is to unify those ideas into one Apple‑HIG‑friendly Dynamic‑Island pill.
+## v2.0 Preview (trend‑aligned)
+We’re aligning with what the macOS community consistently gravitates toward: **menu‑bar Now Playing**, **notch productivity trays**, **lightweight notifications**, and **quick‑toggle utilities**. Inspiration comes from real‑world menu bar apps (music players, repo switchers, notification hubs), but the goal is to merge those ideas into a single Apple‑HIG‑friendly Dynamic‑Island surface — clean, subtle, and fast.
 
 ## License
 GPL-3.0 (see `LICENSE`).
