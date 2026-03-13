@@ -43,9 +43,9 @@ A polished **Dynamic Island**-style pill for **macOS menu bar** using **SketchyB
 - For brightness polling, `brightness` CLI is optional (if installed, higher accuracy).
 
 ## Next Preview (GitHub Trending inspirations)
-- **Now Playing pill** with album art + media controls (Apple‑style menu bar experience).
-- **Notch productivity tray** (AirDrop/clipboard/file drop) with HIG‑aligned micro‑interactions.
-- **SwiftUI‑style motion and glass layers** for a more native look & feel.
+- **Now Playing pill** (album art + controls), inspired by menu‑bar music apps.
+- **Notch productivity tray** (file drop, clipboard, quick actions), inspired by notch utility apps.
+- **Native SwiftUI‑like motion** and glass layers for a more Apple‑consistent look.
 
 ## License
 GPL-3.0 (see `LICENSE`).
