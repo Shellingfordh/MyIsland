@@ -15,3 +15,6 @@
 
 # Glass layer width (optional)
 # USER_GLASS_WIDTH=180
+
+# Drop box folder (optional)
+# USER_DROP_DIR="$HOME/Downloads/MyIslandDrop"

@@ -134,6 +134,7 @@ background.shadow=on \
 background.y_offset=$ISLAND_Y_OFFSET
 
 sketchybar --add item island center
+sketchybar --add item island_drop_watch right
 
 sketchybar --set island \
 update_freq=2 \
@@ -160,6 +161,11 @@ background.drawing=on \
 background.y_offset=$ISLAND_Y_OFFSET \
 width=dynamic \
 click_script=""
+
+sketchybar --set island_drop_watch \
+update_freq=1 \
+drawing=off \
+script="$HOME/.config/sketchybar/plugins/drop_watch.sh"
 
 sketchybar --subscribe island \
 front_app_switched \

@@ -14,7 +14,7 @@ A polished **Dynamic Island**-style pill for the **macOS menu bar** using **Sket
 - **System-language aware UI** (auto‑localized, optional override).
 - **Pill takeover for Volume/Brightness OSD** (native event‑driven display).
 - **Flux‑style controls** (toggle, schedule, temperature, movie mode via Night Shift).
-- **Notch Productivity Tray** (clipboard, downloads, desktop, AirDrop).
+- **Notch Productivity Tray** with **Drop Box** (drag files into a folder, auto‑action).
 - **Glass layer** toggle for Apple‑style depth.
 - **Quick Switch** (fast app launch from the pill menu).
 - **Manual user behavior only**: no auto-login, no captcha automation, no cookie injection.
@@ -42,9 +42,18 @@ A polished **Dynamic Island**-style pill for the **macOS menu bar** using **Sket
 - **Keyboard volume/brightness**: the pill shows the change automatically.
 - **Right click**: Settings, Flux, Tray, Quick Switch, Glass.
 
+## Notch Productivity Tray — Drop Box
+This adds a **drag‑and‑drop workflow** without unsafe automation.
+
+1. **Open Drop Box**: right click → `Drop Box` (opens a folder).
+2. **Choose target**: right click → `Drop → Downloads/Desktop/Clipboard/AirDrop`.
+3. **Drag files into the folder**; the pill confirms the action within ~1s.
+
+Default folder: `~/Downloads/MyIslandDrop` (configurable via `USER_DROP_DIR`).
+
 ## Docs
 - `README_CONFIG.md`
-- `REQUIREMENTS_v2.2.md`
+- `REQUIREMENTS_v2.3.md`
 
 ## Notes
 - Flux controls use the `nightlight` CLI (opens install page if missing).
@@ -56,9 +65,6 @@ A polished **Dynamic Island**-style pill for the **macOS menu bar** using **Sket
 - **Multimodal**: text + system UI state + visual context (safe, user‑approved).  
 - **Action‑guarded**: explicit confirmations, no silent automation.  
 - **Privacy‑first**: local by default, minimal data exposure.
-
-## v2.2 Preview (trend‑aligned)
-We’re aligning with what the macOS community consistently gravitates toward: **menu‑bar Now Playing**, **notch productivity trays**, **glass UI layers**, and **quick toggles**. The goal is to merge those ideas into one Apple‑HIG‑friendly Dynamic‑Island surface — clean, subtle, and fast.
 
 ## License
 GPL-3.0 (see `LICENSE`).

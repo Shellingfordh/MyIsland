@@ -93,6 +93,8 @@ STR_CLIPBOARD=$(loc "Clipboard" "剪贴板")
 STR_DOWNLOADS=$(loc "Downloads" "下载")
 STR_DESKTOP=$(loc "Desktop" "桌面")
 STR_AIRDROP=$(loc "AirDrop" "隔空投送")
+STR_DROPBOX=$(loc "Drop Box" "投递箱")
+STR_DROP_TARGET=$(loc "Drop Target" "投递目标")
 
 # --- 0.2 Agent config ---
 AGENT_CONF="$HOME/.config/sketchybar/agent.conf"
@@ -383,6 +385,19 @@ tray_open_airdrop() {
     set_control_cache "$STR_AIRDROP" "📡"
 }
 
+drop_open_folder() {
+    local dir="${USER_DROP_DIR:-$HOME/Downloads/MyIslandDrop}"
+    mkdir -p "$dir"
+    open "$dir" >/dev/null 2>&1
+    set_control_cache "$STR_DROPBOX" "📦"
+}
+
+drop_set_target() {
+    local target="$1"
+    echo "$target" > /tmp/sketchybar_drop_target
+    set_control_cache "$STR_DROP_TARGET: $target" "📦"
+}
+
 toggle_glass() {
     if [ -f "$GLASS_FLAG" ]; then
         rm -f "$GLASS_FLAG"
@@ -395,7 +410,7 @@ toggle_glass() {
 
 open_settings() {
     local choice
-    choice=$(osascript -e "choose from list {\"Siri\",\"Ironclaw\",\"OpenAI\",\"GLM\",\"Custom\",\"Quick Switch\",\"Audio Panel\",\"Toggle Mute\",\"Toggle Glass\",\"Flux Toggle\",\"Flux Sunset\",\"Flux Schedule\",\"Flux Temp\",\"Flux Movie\",\"Tray Clipboard\",\"Tray Downloads\",\"Tray Desktop\",\"Tray AirDrop\"} with title \"$STR_SETTINGS_TITLE\" with prompt \"$STR_SETTINGS_PROMPT\"" 2>/dev/null | tr -d '\r')
+    choice=$(osascript -e "choose from list {\"Siri\",\"Ironclaw\",\"OpenAI\",\"GLM\",\"Custom\",\"Quick Switch\",\"Audio Panel\",\"Toggle Mute\",\"Toggle Glass\",\"Flux Toggle\",\"Flux Sunset\",\"Flux Schedule\",\"Flux Temp\",\"Flux Movie\",\"Tray Clipboard\",\"Tray Downloads\",\"Tray Desktop\",\"Tray AirDrop\",\"Drop Box\",\"Drop → Downloads\",\"Drop → Desktop\",\"Drop → Clipboard\",\"Drop → AirDrop\"} with title \"$STR_SETTINGS_TITLE\" with prompt \"$STR_SETTINGS_PROMPT\"" 2>/dev/null | tr -d '\r')
     [ -z "$choice" ] && return
     [ "$choice" = "false" ] && return
 
@@ -473,6 +488,31 @@ open_settings() {
 
     if [ "$choice" = "Tray AirDrop" ]; then
         tray_open_airdrop
+        return
+    fi
+
+    if [ "$choice" = "Drop Box" ]; then
+        drop_open_folder
+        return
+    fi
+
+    if [ "$choice" = "Drop → Downloads" ]; then
+        drop_set_target "downloads"
+        return
+    fi
+
+    if [ "$choice" = "Drop → Desktop" ]; then
+        drop_set_target "desktop"
+        return
+    fi
+
+    if [ "$choice" = "Drop → Clipboard" ]; then
+        drop_set_target "clipboard"
+        return
+    fi
+
+    if [ "$choice" = "Drop → AirDrop" ]; then
+        drop_set_target "airdrop"
         return
     fi
 
