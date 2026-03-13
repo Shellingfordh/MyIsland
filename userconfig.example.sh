@@ -8,3 +8,7 @@
 
 # Extra Y offset (applies to background + icon + label)
 # USER_ISLAND_Y_OFFSET_EXTRA=0
+
+# Force UI language for the Island (optional)
+# USER_LANG=en
+# USER_LANG=zh

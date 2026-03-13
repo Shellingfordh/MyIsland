@@ -37,13 +37,13 @@ A polished **Dynamic Island**-style pill for **macOS menu bar** using **SketchyB
 
 ## Docs
 - `README_CONFIG.md`
-- `REQUIREMENTS_v1.9.md`
+- `REQUIREMENTS_v1.10.md`
 
 ## Notes
 - Siri greeting language is controlled by macOS Siri settings.
 
-## Next Preview (from the community trendline)
-We’re aligning with the macOS community’s most‑loved patterns: **menu bar Now Playing**, **notch productivity trays**, and **system quick toggles**. Inspiration comes from tools like **SpotMenu** (music in the menu bar), **Itchy** (notch modules), and **OnlySwitch** (system toggles), but the goal is a tighter Apple‑HIG look inside one unified Dynamic‑Island pill.
+## Next Preview (community trendline)
+We’re aligning with the macOS community’s most‑loved patterns: **menu bar Now Playing**, **notch productivity trays**, **file drop zones**, and **notification focus**. Inspiration includes tools like **SpotMenu** (music in the menu bar), **Itchy** (notch modules), **NotchDrop** (file drop & notch hub), and **Gitify** (menu bar notifications). The goal is to unify those ideas into one Apple‑HIG‑friendly Dynamic‑Island pill.
 
 ## License
 GPL-3.0 (see `LICENSE`).

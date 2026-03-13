@@ -3,6 +3,13 @@
 SCRIPT_PATH=$(realpath "$0")
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
+# User overrides
+USER_CONFIG="$HOME/.config/sketchybar/userconfig.sh"
+if [ -f "$USER_CONFIG" ]; then
+    # shellcheck disable=SC1090
+    source "$USER_CONFIG"
+fi
+
 # --- 0. 环境与变量初始化 ---
 MODEL_NAME=$(sysctl -n hw.model)
 ARCH=$(uname -m)
@@ -25,14 +32,20 @@ if [ -z "$APPLE_LOCALE" ]; then
     APPLE_LOCALE=$(defaults read -g AppleLocale 2>/dev/null | tr -d '",()')
 fi
 LANG_IS_ZH=0
-case "${APPLE_LANG:-${LANG:-}}" in
-  zh* ) LANG_IS_ZH=1 ;;
-  * )
-    case "${APPLE_LOCALE:-}" in
+if [ "${USER_LANG:-}" = "en" ]; then
+    LANG_IS_ZH=0
+elif [ "${USER_LANG:-}" = "zh" ]; then
+    LANG_IS_ZH=1
+else
+    case "${APPLE_LANG:-${LANG:-}}" in
       zh* ) LANG_IS_ZH=1 ;;
+      * )
+        case "${APPLE_LOCALE:-}" in
+          zh* ) LANG_IS_ZH=1 ;;
+        esac
+      ;;
     esac
-  ;;
-esac
+fi
 
 loc() {
     # loc "en" "zh"
@@ -573,6 +586,20 @@ get_info() {
     if [ -n "$ctrl" ]; then
         echo "$ctrl"
         return
+    fi
+    # 0.5 全局播放检测（不依赖前台）
+    local play_state title artist
+    play_state=$(osascript -e 'tell application "Spotify" to if it is running then player state as string else "stopped"' 2>/dev/null)
+    if [ "$play_state" = "playing" ]; then
+        title=$(osascript -e 'tell application "Spotify" to name of current track' 2>/dev/null)
+        artist=$(osascript -e 'tell application "Spotify" to artist of current track' 2>/dev/null)
+        echo "PLAY|$(get_app_color "Spotify" "com.spotify.client")|$STR_NOW_PLAYING · ${title} — ${artist}|🎵"; return
+    fi
+    play_state=$(osascript -e 'tell application "Music" to if it is running then player state as string else "stopped"' 2>/dev/null)
+    if [ "$play_state" = "playing" ]; then
+        title=$(osascript -e 'tell application "Music" to name of current track' 2>/dev/null)
+        artist=$(osascript -e 'tell application "Music" to artist of current track' 2>/dev/null)
+        echo "PLAY|$(get_app_color "Music" "com.apple.Music")|$STR_NOW_PLAYING · ${title} — ${artist}|🎵"; return
     fi
     # 强力初始化：如果是初次运行或 update 触发，确保不卡 Loading
     if [[ "$SENDER" == "island_update" || "$SENDER" == "forced" ]]; then
