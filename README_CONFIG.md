@@ -75,6 +75,11 @@
 5. 交互处理
 - 点击 island 打开 Launchpad，并短暂改变边框颜色
 
+6. v3.0 交互扩展
+- Context Cards（上下文卡片）
+- Hotness Tray（热度托盘：Google Trends + GitHub Trending）
+- Hotness Toggle / Refresh（开关与强制刷新）
+
 6. 渲染输出
 - `COMMON_ARGS` 统一渲染属性
 - 根据状态 `PLAY|GEMINI|WEB|FOCUS|NOTIF|IDLE` 更新 icon/label/颜色
@@ -99,6 +104,12 @@
 ### `plugins/notifier.sh.x`
 二进制文件，无法直接阅读源码。推测为 `notifier.sh` 的编译版本或旧工具产物，当前配置未使用该文件。
 
+### `plugins/hotness.sh`
+职责：拉取并缓存热度数据（Google Trends / GitHub Trending），仅在用户触发时展示。
+
+### `plugins/context_cards.sh`
+职责：采集当前 App / 窗口 / 媒体 / Focus / 系统状态，弹出上下文卡片。
+
 ## 功能清单（1.0）
 - 动态岛胶囊 UI（居中）
 - 刘海/非刘海与架构适配
@@ -119,10 +130,16 @@
 - UI 文字根据系统语言自动适配（中文/英文）
 - 新增 Agent 配置文件：`~/.config/sketchybar/agent.conf`（示例：`agent.conf.example`，支持 Custom 命令）
 
+## 3.0 新增功能
+- Context Cards（上下文卡片）
+- Hotness Tray（热度托盘）
+- `config.json`（热度与上下文开关、缓存策略）
+
 ## 运行依赖
 - macOS（需要 `osascript` + `System Events` 权限）
 - `sketchybar` 已安装并运行
 - `sqlite3` 可用（用于通知监听）
+- `curl`（热度数据拉取）
 - `ioreg`, `sysctl`, `uname` 等系统工具
 
 ## 已知问题与注意事项

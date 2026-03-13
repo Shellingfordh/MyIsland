@@ -10,6 +10,55 @@ if [ -f "$USER_CONFIG" ]; then
     source "$USER_CONFIG"
 fi
 
+# Optional JSON config (v3.0)
+CONFIG_FILE="$HOME/.config/sketchybar/config.json"
+HOTNESS_ENABLED=${HOTNESS_ENABLED:-off}
+HOTNESS_CACHE_MINUTES=${HOTNESS_CACHE_MINUTES:-30}
+HOTNESS_SOURCES=${HOTNESS_SOURCES:-"google,github"}
+HOTNESS_GEO=${HOTNESS_GEO:-"US"}
+HOTNESS_LIMIT=${HOTNESS_LIMIT:-5}
+CONTEXT_CARDS=${CONTEXT_CARDS:-"app,media,focus,system"}
+
+load_config_json() {
+    [ -f "$CONFIG_FILE" ] || return 0
+    python3 - <<'PY'
+import json, os
+path = os.path.expanduser("~/.config/sketchybar/config.json")
+try:
+    data = json.load(open(path))
+except Exception:
+    data = {}
+keys = [
+    "HOTNESS_ENABLED",
+    "HOTNESS_CACHE_MINUTES",
+    "HOTNESS_SOURCES",
+    "HOTNESS_GEO",
+    "HOTNESS_LIMIT",
+    "CONTEXT_CARDS",
+    "UI_LANGUAGE",
+]
+for k in keys:
+    v = data.get(k)
+    if v is None:
+        continue
+    print(f"{k}={v}")
+PY
+}
+
+while IFS='=' read -r k v; do
+    case "$k" in
+        HOTNESS_ENABLED|HOTNESS_CACHE_MINUTES|HOTNESS_SOURCES|HOTNESS_GEO|HOTNESS_LIMIT|CONTEXT_CARDS|UI_LANGUAGE)
+            eval "$k=\"$v\""
+            ;;
+    esac
+done < <(load_config_json)
+
+# Re-apply user overrides to ensure precedence
+if [ -f "$USER_CONFIG" ]; then
+    # shellcheck disable=SC1090
+    source "$USER_CONFIG"
+fi
+
 # --- 0. 环境与变量初始化 ---
 MODEL_NAME=$(sysctl -n hw.model)
 ARCH=$(uname -m)
@@ -88,6 +137,9 @@ STR_FLUX_SUN=$(loc "Sunset to Sunrise" "日落到日出")
 STR_FLUX_CUSTOM=$(loc "Custom Schedule" "自定义时间")
 STR_FLUX_TEMP=$(loc "Color Temperature" "色温")
 STR_FLUX_MOVIE=$(loc "Movie Mode" "电影模式")
+STR_FLUX_WARM=$(loc "Warm Preset" "暖色预设")
+STR_FLUX_NEUTRAL=$(loc "Neutral Preset" "中性预设")
+STR_FLUX_COOL=$(loc "Cool Preset" "冷色预设")
 STR_TRAY=$(loc "Notch Tray" "刘海托盘")
 STR_CLIPBOARD=$(loc "Clipboard" "剪贴板")
 STR_DOWNLOADS=$(loc "Downloads" "下载")
@@ -95,6 +147,10 @@ STR_DESKTOP=$(loc "Desktop" "桌面")
 STR_AIRDROP=$(loc "AirDrop" "隔空投送")
 STR_DROPBOX=$(loc "Drop Box" "投递箱")
 STR_DROP_TARGET=$(loc "Drop Target" "投递目标")
+STR_HOTNESS_TRAY=$(loc "Hotness Tray" "热度托盘")
+STR_HOTNESS_TOGGLE=$(loc "Hotness Toggle" "热度开关")
+STR_HOTNESS_REFRESH=$(loc "Hotness Refresh" "热度刷新")
+STR_CONTEXT_CARDS=$(loc "Context Cards" "上下文卡片")
 
 # --- 0.2 Agent config ---
 AGENT_CONF="$HOME/.config/sketchybar/agent.conf"
@@ -348,6 +404,13 @@ nightshift_schedule_custom() {
     set_control_cache "$STR_FLUX_CUSTOM $start-$end" "🌙"
 }
 
+nightshift_preset() {
+    require_nightlight || return
+    local value="$1"
+    nightlight temperature "$value" >/dev/null 2>&1
+    set_control_cache "$STR_FLUX_TEMP $value" "🌙"
+}
+
 movie_mode_toggle() {
     # simple toggle: disable Night Shift temporarily
     require_nightlight || return
@@ -398,6 +461,71 @@ drop_set_target() {
     set_control_cache "$STR_DROP_TARGET: $target" "📦"
 }
 
+config_set() {
+    local key="$1"
+    local val="$2"
+    python3 - <<'PY' "$key" "$val"
+import json, os, sys
+path = os.path.expanduser("~/.config/sketchybar/config.json")
+key = sys.argv[1]
+val = sys.argv[2]
+data = {}
+if os.path.exists(path):
+    try:
+        data = json.load(open(path))
+    except Exception:
+        data = {}
+data[key] = val
+os.makedirs(os.path.dirname(path), exist_ok=True)
+with open(path, "w") as f:
+    json.dump(data, f, ensure_ascii=True, indent=2)
+PY
+}
+
+hotness_show() {
+    if [ "$HOTNESS_ENABLED" != "on" ]; then
+        set_control_cache "$STR_HOTNESS_TOGGLE: off" "🔥"
+        return
+    fi
+    HOTNESS_ENABLED="$HOTNESS_ENABLED" \
+    HOTNESS_CACHE_MINUTES="$HOTNESS_CACHE_MINUTES" \
+    HOTNESS_SOURCES="$HOTNESS_SOURCES" \
+    HOTNESS_GEO="$HOTNESS_GEO" \
+    HOTNESS_LIMIT="$HOTNESS_LIMIT" \
+    "$HOME/.config/sketchybar/plugins/hotness.sh" show
+}
+
+hotness_refresh() {
+    if [ "$HOTNESS_ENABLED" != "on" ]; then
+        set_control_cache "$STR_HOTNESS_TOGGLE: off" "🔥"
+        return
+    fi
+    HOTNESS_ENABLED="$HOTNESS_ENABLED" \
+    HOTNESS_CACHE_MINUTES=0 \
+    HOTNESS_SOURCES="$HOTNESS_SOURCES" \
+    HOTNESS_GEO="$HOTNESS_GEO" \
+    HOTNESS_LIMIT="$HOTNESS_LIMIT" \
+    "$HOME/.config/sketchybar/plugins/hotness.sh" fetch
+    set_control_cache "$STR_HOTNESS_REFRESH" "🔥"
+}
+
+hotness_toggle() {
+    local next
+    if [ "$HOTNESS_ENABLED" = "on" ]; then
+        next="off"
+    else
+        next="on"
+    fi
+    HOTNESS_ENABLED="$next"
+    config_set "HOTNESS_ENABLED" "$next"
+    set_control_cache "$STR_HOTNESS_TOGGLE: $next" "🔥"
+}
+
+context_cards_show() {
+    "$HOME/.config/sketchybar/plugins/context_cards.sh"
+    set_control_cache "$STR_CONTEXT_CARDS" "🧭"
+}
+
 toggle_glass() {
     if [ -f "$GLASS_FLAG" ]; then
         rm -f "$GLASS_FLAG"
@@ -410,7 +538,7 @@ toggle_glass() {
 
 open_settings() {
     local choice
-    choice=$(osascript -e "choose from list {\"Siri\",\"Ironclaw\",\"OpenAI\",\"GLM\",\"Custom\",\"Quick Switch\",\"Audio Panel\",\"Toggle Mute\",\"Toggle Glass\",\"Flux Toggle\",\"Flux Sunset\",\"Flux Schedule\",\"Flux Temp\",\"Flux Movie\",\"Tray Clipboard\",\"Tray Downloads\",\"Tray Desktop\",\"Tray AirDrop\",\"Drop Box\",\"Drop → Downloads\",\"Drop → Desktop\",\"Drop → Clipboard\",\"Drop → AirDrop\"} with title \"$STR_SETTINGS_TITLE\" with prompt \"$STR_SETTINGS_PROMPT\"" 2>/dev/null | tr -d '\r')
+    choice=$(osascript -e "choose from list {\"Siri\",\"Ironclaw\",\"OpenAI\",\"GLM\",\"Custom\",\"Quick Switch\",\"Audio Panel\",\"Toggle Mute\",\"Toggle Glass\",\"Flux Toggle\",\"Flux Sunset\",\"Flux Schedule\",\"Flux Temp\",\"Flux Warm\",\"Flux Neutral\",\"Flux Cool\",\"Flux Movie\",\"Tray Clipboard\",\"Tray Downloads\",\"Tray Desktop\",\"Tray AirDrop\",\"Drop Box\",\"Drop → Downloads\",\"Drop → Desktop\",\"Drop → Clipboard\",\"Drop → AirDrop\",\"Context Cards\",\"Hotness Tray\",\"Hotness Toggle\",\"Hotness Refresh\"} with title \"$STR_SETTINGS_TITLE\" with prompt \"$STR_SETTINGS_PROMPT\"" 2>/dev/null | tr -d '\r')
     [ -z "$choice" ] && return
     [ "$choice" = "false" ] && return
 
@@ -466,6 +594,21 @@ open_settings() {
         return
     fi
 
+    if [ "$choice" = "Flux Warm" ]; then
+        nightshift_preset 30
+        return
+    fi
+
+    if [ "$choice" = "Flux Neutral" ]; then
+        nightshift_preset 50
+        return
+    fi
+
+    if [ "$choice" = "Flux Cool" ]; then
+        nightshift_preset 70
+        return
+    fi
+
     if [ "$choice" = "Flux Movie" ]; then
         movie_mode_toggle
         return
@@ -513,6 +656,26 @@ open_settings() {
 
     if [ "$choice" = "Drop → AirDrop" ]; then
         drop_set_target "airdrop"
+        return
+    fi
+
+    if [ "$choice" = "Context Cards" ]; then
+        context_cards_show
+        return
+    fi
+
+    if [ "$choice" = "Hotness Tray" ]; then
+        hotness_show
+        return
+    fi
+
+    if [ "$choice" = "Hotness Toggle" ]; then
+        hotness_toggle
+        return
+    fi
+
+    if [ "$choice" = "Hotness Refresh" ]; then
+        hotness_refresh
         return
     fi
 

@@ -85,6 +85,12 @@ Optional: open `MyIsland.dmg` for a GUI copy.
 - **Keyboard volume/brightness**: pill shows changes automatically.
 - **右键菜单**：设置、Flux、托盘、快速切换、玻璃层、Drop Box。
 - **Right click**: Settings, Flux, Tray, Quick Switch, Glass, Drop Box.
+- **Flux 预设**：暖/中/冷三档 + 自定义时间/色温。
+- **Flux presets**: warm/neutral/cool + custom schedule/temp.
+- **上下文卡片**：右键菜单可查看当前 App / 媒体 / Focus / 系统状态。
+- **Context Cards**: right‑click to view app/media/focus/system.
+- **热度托盘**：可选开启 Google Trends + GitHub Trending 摘要（默认关闭）。
+- **Hotness Tray**: optional Google Trends + GitHub Trending summary (off by default).
 
 ---
 
@@ -124,6 +130,8 @@ Edit `~/.config/sketchybar/agent.conf` (see `agent.conf.example`) to switch prov
 ## 配置 / Configuration
 - `userconfig.example.sh` → 复制为 `userconfig.sh`，用于位置偏移、玻璃层宽度等微调。
 - `userconfig.example.sh` → copy to `userconfig.sh` for offsets and glass width.
+- `config.example.json` → 复制为 `config.json`，用于热度/上下文开关与缓存。
+- `config.example.json` → copy to `config.json` for hotness/context toggles & cache.
 - `agent.conf.example` → 复制为 `agent.conf`，配置 Agent Provider。
 - `agent.conf.example` → copy to `agent.conf` to set provider.
 - `README_CONFIG.md` → 深入文档（结构与实现细节）。

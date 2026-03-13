@@ -18,3 +18,11 @@
 
 # Drop box folder (optional)
 # USER_DROP_DIR="$HOME/Downloads/MyIslandDrop"
+
+# Hotness / Context (optional)
+# HOTNESS_ENABLED=off
+# HOTNESS_CACHE_MINUTES=30
+# HOTNESS_SOURCES="google,github"
+# HOTNESS_GEO=US
+# HOTNESS_LIMIT=5
+# CONTEXT_CARDS="app,media,focus,system"
