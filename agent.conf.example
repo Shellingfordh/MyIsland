@@ -1,0 +1,7 @@
+# Default agent selection for Island
+AGENT_PROVIDER="siri"  # siri | ironclaw | openai | glm | custom
+OPENAI_MODEL="gpt-4o"
+OPENAI_BASE_URL="https://api.openai.com/v1"
+CUSTOM_COMMAND=""  # e.g. /usr/local/bin/ironclaw -m "{prompt}"
+# OPENAI_API_KEY=""  # optional, can be exported via env instead
+# IRONCLAW_ARGS=""   # extra args for ironclaw
